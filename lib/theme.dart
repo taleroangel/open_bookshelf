@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 
-const primaryColor = Color(0xFFC1B0A2);
-
 customThemeData(ColorScheme? colorScheme,
-        [Brightness brightness = Brightness.light]) =>
-    ThemeData(
-        useMaterial3: true,
-        colorScheme: colorScheme ??
-            ColorScheme.fromSeed(
-                seedColor: primaryColor, brightness: brightness));
+    [Brightness brightness = Brightness.light]) {
+  final customColorScheme = colorScheme ??
+      ColorScheme.fromSeed(
+          seedColor: const Color(0xFFC1B0A2), brightness: brightness);
+  return ThemeData(
+      useMaterial3: true,
+      colorScheme: customColorScheme,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        selectedItemColor: customColorScheme.primary,
+        unselectedItemColor: customColorScheme.onBackground,
+      ),
+      navigationDrawerTheme: NavigationDrawerThemeData(
+        indicatorColor: customColorScheme.primary,
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+          indicatorColor: customColorScheme.primary,
+          selectedIconTheme:
+              IconThemeData(color: customColorScheme.onPrimary)));
+}
