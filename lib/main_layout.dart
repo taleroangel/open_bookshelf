@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/providers/book_preview_provider.dart';
+import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/screens/about_screen.dart';
 import 'package:open_bookshelf/screens/bookshelf_screen.dart';
+import 'package:open_bookshelf/widgets/book_preview_sideview.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({
@@ -38,10 +39,9 @@ class _MainLayoutState extends State<MainLayout> {
           _currentIndex = selectedIndex;
         }),
         children: const [
-          BookshelfScreen(BookshelfFilter.reading),
-          BookshelfScreen(BookshelfFilter.wishlist),
-          BookshelfScreen(BookshelfFilter.read),
-          BookshelfScreen(BookshelfFilter.favorites),
+          BookshelfScreen(BookCollection.reading),
+          BookshelfScreen(BookCollection.wishlist),
+          BookshelfScreen(BookCollection.read),
           AboutScreen()
         ],
       ),
@@ -60,8 +60,6 @@ class _MainLayoutState extends State<MainLayout> {
             label: t.navigation.wishlist),
         NavigationDestination(
             icon: const Icon(Icons.book), label: t.navigation.read),
-        NavigationDestination(
-            icon: const Icon(Icons.favorite), label: t.navigation.favorites),
         NavigationDestination(
             icon: const Icon(Icons.help), label: t.navigation.about),
       ],

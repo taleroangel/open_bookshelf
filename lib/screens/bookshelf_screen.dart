@@ -5,10 +5,8 @@ import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/book_preview_provider.dart';
 import 'package:provider/provider.dart';
 
-enum BookshelfFilter { reading, read, favorites, wishlist }
-
 class BookshelfScreen extends StatelessWidget {
-  final BookshelfFilter filter;
+  final BookCollection filter;
   const BookshelfScreen(this.filter, {super.key});
 
   @override

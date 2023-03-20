@@ -1,0 +1,1 @@
+class FailedToFetchContentException implements Exception {}

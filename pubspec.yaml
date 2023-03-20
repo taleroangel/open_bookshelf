@@ -28,6 +28,8 @@ dependencies:
   shared_preferences: ^2.0.18
   hive: ^2.2.3
   faker: ^2.1.0
+  http: ^0.13.5
+  path_provider: ^2.0.13
 
 dev_dependencies:
   flutter_test:

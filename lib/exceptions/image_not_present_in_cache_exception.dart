@@ -1,0 +1,1 @@
+class ImageNotPresentInCacheException implements Exception {}
