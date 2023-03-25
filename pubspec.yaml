@@ -30,6 +30,7 @@ dependencies:
   faker: ^2.1.0
   http: ^0.13.5
   path_provider: ^2.0.13
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   flutter_test:

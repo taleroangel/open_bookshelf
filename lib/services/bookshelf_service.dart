@@ -11,6 +11,7 @@ import 'package:open_bookshelf/services/storage_service.dart';
 const _coverEndpoint = "https://covers.openlibrary.org/b/isbn/%%-M.jpg";
 
 class BookshelfService {
+  /* --------- Covers --------- */
   final _storageService = GetIt.I.get<StorageService>();
 
   Future<Uint8List> _getDefaultCover() async {
@@ -44,10 +45,15 @@ class BookshelfService {
 
     // Attempt to fetch cover from the Cache
     try {
-      return _fetchCoverFromCache(isbn);
+      GetIt.I.get<Logger>().d("Cover: Fetching cover from cache...");
       // If image is not present in cache download it
+      return _fetchCoverFromCache(isbn);
     } on ImageNotPresentInCacheException {
       // Try and download image
+      GetIt.I
+          .get<Logger>()
+          .e("Cover: not present in cache, downloading from internet");
+
       try {
         final fetchedImage = await _fetchCoverFromInternet(isbn);
         _storageService.storeContent(
@@ -55,9 +61,10 @@ class BookshelfService {
         return fetchedImage;
         // If image fetch failed return the default cover
       } on FailedToFetchContentException {
+        GetIt.I.get<Logger>().e("Cover: Failed to fetch from internet");
         return _getDefaultCover();
       } on ResourceAlreadyExistsException {
-        GetIt.I.get<Logger>().e("ImageCache internal error");
+        GetIt.I.get<Logger>().e("Cache: ImageCache internal error");
         throw Exception(
             "ImageCache failed to fetch contents from internal storage");
       }

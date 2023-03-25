@@ -56,6 +56,7 @@ class Application extends StatelessWidget {
                 ChangeNotifierProvider(create: (_) => BookshelfProvider())
               ],
               builder: (_, __) => MaterialApp(
+                debugShowCheckedModeBanner: false, // Obstruct actions
                 locale: TranslationProvider.of(context).flutterLocale,
                 supportedLocales: AppLocaleUtils.supportedLocales,
                 localizationsDelegates: GlobalMaterialLocalizations.delegates,

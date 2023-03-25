@@ -31,10 +31,7 @@ class _MainLayoutState extends State<MainLayout> {
       largeSecondaryBody: (_) => const BookPreviewSideview(),
       body: (_) => PageView(
         controller: _pageController,
-        scrollDirection:
-            MediaQuery.of(context).orientation == Orientation.landscape
-                ? Axis.vertical
-                : Axis.horizontal,
+        scrollDirection: Axis.horizontal,
         onPageChanged: (selectedIndex) => setState(() {
           _currentIndex = selectedIndex;
         }),

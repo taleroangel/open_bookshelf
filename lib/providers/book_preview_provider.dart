@@ -28,16 +28,14 @@ class BookPreviewProvider extends ChangeNotifier {
     _sidePreview = null;
   }
 
-  dynamic navigateToBook(BuildContext context, Book book) {
+  dynamic navigateToBook(BuildContext context, String bookISBN) {
     if (_sideviewAvailable) {
-      _sidePreview = BookScreen(
-        book: book,
-      );
+      _sidePreview = BookScreen(bookISBN: bookISBN);
       notifyListeners();
     } else {
       return Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => BookScreen(
-                book: book,
+                bookISBN: bookISBN,
               )));
     }
   }
