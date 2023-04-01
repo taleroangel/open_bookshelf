@@ -49,7 +49,7 @@ class StorageService {
   }
 
   /// Save content to internal storage
-  void storeContent(
+  Future<void> storeContent(
       StorageSource storageSource, String resource, Uint8List data) async {
     final path =
         "${await StorageSource.getSourcePath(storageSource)}/$resource";
@@ -59,7 +59,7 @@ class StorageService {
       throw ResourceAlreadyExistsException(resource: path);
     }
 
-    file.create(recursive: true);
+    await file.create(recursive: true);
     await file.writeAsBytes(data);
   }
 }

@@ -69,8 +69,13 @@ class BookshelfService {
         // Fetch cover from internet
         final fetchedImage = await _fetchCoverFromInternet(cover);
         // Store the cover on cache
-        _storageService.storeContent(
-            StorageSource.imageCache, "$cover.jpg", fetchedImage);
+        _storageService
+            .storeContent(StorageSource.imageCache, "$cover.jpg", fetchedImage)
+            .then((value) {
+          // Log the result
+          GetIt.I.get<Logger>().i("Cover: image fetched from internet cached");
+        });
+
         return fetchedImage;
         // If image fetch failed return the default cover
       } on FailedToFetchContentException {

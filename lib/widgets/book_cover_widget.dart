@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:logger/logger.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/screens/cover_screen.dart';
 import 'package:open_bookshelf/widgets/exception_widget.dart';
 import 'package:provider/provider.dart';
 
-class BookCoverWidget extends StatelessWidget {
+class BookCoverWidget extends StatefulWidget {
   const BookCoverWidget({super.key});
+
+  @override
+  State<BookCoverWidget> createState() => _BookCoverWidgetState();
+}
+
+class _BookCoverWidgetState extends State<BookCoverWidget> {
+  // Current Widget
+  Widget showCurrentWidget = const CircularProgressIndicator();
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,8 @@ class BookCoverWidget extends StatelessWidget {
           // If connectoin was successfull, then store image in internal cache
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return ExceptionWidget(exception: snapshot.error as Exception);
+              showCurrentWidget =
+                  ExceptionWidget(exception: snapshot.error as Exception);
             }
 
             // No errors where found
@@ -26,7 +33,7 @@ class BookCoverWidget extends StatelessWidget {
               // Grap image from memory
               final image = Image.memory(snapshot.data!);
               // Show it inside an expanded
-              return Hero(
+              showCurrentWidget = Hero(
                 tag: "cover:zoom",
                 child: GestureDetector(
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(
@@ -37,10 +44,11 @@ class BookCoverWidget extends StatelessWidget {
             }
           }
 
-          // If no cache found then show a progress indicator
-          else {
-            return const CircularProgressIndicator();
-          }
+          return AnimatedSwitcher(
+            switchInCurve: Curves.decelerate,
+            duration: const Duration(milliseconds: 500),
+            child: showCurrentWidget,
+          );
         });
   }
 }
