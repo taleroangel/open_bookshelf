@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:faker/faker.dart';
+import 'package:get_it/get_it.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
+import 'package:open_bookshelf/services/bookshelf_service.dart';
 
 part 'book.freezed.dart';
 part 'book.g.dart';
@@ -33,18 +35,22 @@ enum BookCollection {
   }
 }
 
-@freezed
+@unfreezed
 class Book with _$Book {
-  const factory Book({
-    required String title,
-    required String isbn,
-    String? url,
-    @Default([]) List<String> authors,
-    @Default([]) List<String> publishers,
-    @Default([]) List<String> subjects,
-    String? cover,
+  // Freezed book constructor
+  factory Book({
+    required final String title,
+    required final String isbn,
+    final String? url,
+    @Default([]) final List<String> authors,
+    @Default([]) final List<String> publishers,
+    @Default([]) final List<String> subjects,
+    final String? cover,
     @Default(BookCollection.wishlist) BookCollection collection,
   }) = _Book;
+
+  Book._();
+  late final image = GetIt.I.get<BookshelfService>().fetchCover(cover);
 
   factory Book.fromJson(Map<String, Object?> json) => _$BookFromJson(json);
 

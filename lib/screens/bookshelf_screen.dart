@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
-import 'package:open_bookshelf/providers/book_preview_provider.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -11,8 +10,7 @@ class BookshelfScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Obtain Providers
-    final bookPreviewProvider = context.read<BookPreviewProvider>();
+    // Provides bookshelf data to be shown
     final bookshelfProvider = context.watch<BookshelfProvider>();
 
     // Take only books where collection is same as filter
@@ -51,8 +49,10 @@ class BookshelfScreen extends StatelessWidget {
               itemBuilder: (context, idx) => ListTile(
                 title: Text(bookshelf[idx].title),
                 subtitle: Text(bookshelf[idx].isbn),
-                onTap: () => bookPreviewProvider.navigateToBook(
-                    context, bookshelf[idx].isbn),
+                onTap: () {
+                  bookshelfProvider.selectedBook = bookshelf[idx];
+                  context.dispatchNotification(OnBookSelectionNotification());
+                },
               ),
             ),
     );

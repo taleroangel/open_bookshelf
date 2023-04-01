@@ -10,7 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/main_layout.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/providers/book_preview_provider.dart';
+import 'package:open_bookshelf/providers/sideview_provider.dart';
 import 'package:open_bookshelf/services/bookshelf_service.dart';
 import 'package:open_bookshelf/services/storage_service.dart';
 import 'package:open_bookshelf/theme.dart';
@@ -30,8 +30,12 @@ void main() async {
   // Set logging level
   Logger.level = kDebugMode ? Level.debug : Level.warning;
 
-  // Run the application
+  // Make sure all paths exist
+  await StorageService.ensurePathsExists();
+  // Get all dependencies ready
   await GetIt.I.allReady();
+
+  // Run the application
   runApp(TranslationProvider(child: const Application()));
 
   // Log information
@@ -52,7 +56,7 @@ class Application extends StatelessWidget {
     return DynamicColorBuilder(
         builder: (lightDynamic, darkDynamic) => MultiProvider(
               providers: [
-                ChangeNotifierProvider(create: (_) => BookPreviewProvider()),
+                ChangeNotifierProvider(create: (_) => SideviewProvider()),
                 ChangeNotifierProvider(create: (_) => BookshelfProvider())
               ],
               builder: (_, __) => MaterialApp(
