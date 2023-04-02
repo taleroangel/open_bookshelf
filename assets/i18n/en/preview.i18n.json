@@ -1,5 +1,6 @@
 {
 	"not_selected": "Select a book",
+	"not_int_openlibrary": "Not present in OpenLibrary",
 	"submenu": {
 		"barcode_item": "ISBN Barcode",
 		"visit_on_openlibrary": "Visit on OpenLibrary",

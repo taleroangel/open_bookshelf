@@ -11,7 +11,7 @@ part 'book.freezed.dart';
 part 'book.g.dart';
 
 enum BookCollection {
-  reading(Icons.menu_book_rounded),
+  reading(Icons.auto_stories),
   wishlist(Icons.lightbulb_sharp),
   read(Icons.book);
 
@@ -58,7 +58,7 @@ class Book with _$Book {
     final faker = Faker();
     return Book(
       title: faker.lorem.sentence(),
-      url: faker.internet.httpsUrl(),
+      url: Random().nextInt(2) == 1 ? faker.internet.httpsUrl() : null,
       authors: List.generate(3, (index) => faker.person.name()),
       publishers: List.generate(2, (index) => faker.company.name()),
       subjects: List.generate(6, (index) => faker.lorem.word()),

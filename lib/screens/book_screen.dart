@@ -61,10 +61,20 @@ class BookScreen extends StatelessWidget {
                   // Show title
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      book.title,
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    child: RichText(
                       textAlign: TextAlign.center,
+                      text: TextSpan(children: [
+                        TextSpan(
+                          text: book.title,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        if (book.url == null)
+                          TextSpan(
+                            text: "\n${t.preview.not_int_openlibrary}",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary),
+                          )
+                      ]),
                     ),
                   ),
 

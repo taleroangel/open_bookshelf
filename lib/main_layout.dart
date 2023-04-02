@@ -4,7 +4,7 @@ import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/providers/sideview_provider.dart';
-import 'package:open_bookshelf/screens/about_screen.dart';
+import 'package:open_bookshelf/screens/settings_screen.dart';
 import 'package:open_bookshelf/screens/book_screen.dart';
 import 'package:open_bookshelf/screens/bookshelf_screen.dart';
 import 'package:open_bookshelf/widgets/sideview_widget.dart';
@@ -55,7 +55,7 @@ class _MainLayoutState extends State<MainLayout> {
             BookshelfScreen(filter: BookCollection.reading),
             BookshelfScreen(filter: BookCollection.wishlist),
             BookshelfScreen(filter: BookCollection.read),
-            AboutScreen()
+            SettingsScreen()
           ],
         ),
       ),
@@ -76,7 +76,7 @@ class _MainLayoutState extends State<MainLayout> {
         NavigationDestination(
             icon: const Icon(Icons.book), label: t.navigation.read),
         NavigationDestination(
-            icon: const Icon(Icons.help), label: t.navigation.about),
+            icon: const Icon(Icons.settings), label: t.navigation.settings),
       ],
     );
   }
