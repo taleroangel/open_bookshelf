@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:open_bookshelf/services/bookshelf_service.dart';
 
 class CoverScreen extends StatelessWidget {
   final Widget child;

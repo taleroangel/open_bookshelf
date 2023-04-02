@@ -10,26 +10,33 @@ const _boxSize = 160;
 const _boxAspectRatio = 0.65;
 
 class BookshelfScreen extends StatelessWidget {
-  final BookCollection filter;
-  const BookshelfScreen(this.filter, {super.key});
+  final BookCollection? filter;
+  const BookshelfScreen({this.filter, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<BookshelfProvider>(
       builder: (context, provider, child) {
         // Take only books where collection is same as filter
-        final bookshelf = provider.books.values
-            .where((value) => (value.collection == filter))
+        final bookshelf = (filter != null
+                ? provider.books.values
+                    .where((value) => (value.collection == filter))
+                : provider.books.values)
+            // Map values to widgets
             .map((e) => BookPickWidget(
                 book: e,
                 onTap: (book) {
                   provider.selectedBook = book;
+                  // Dispatch book selection notification
                   context.dispatchNotification(OnBookSelectionNotification());
                 }))
             .toList();
 
         return Scaffold(
-            appBar: AppBar(title: Text(t.navigation.bookshelf)),
+            appBar: AppBar(
+                title: Text(filter == null
+                    ? t.navigation.bookshelf
+                    : BookCollection.getLabel(filter!))),
             body: bookshelf.isEmpty
                 ? child
                 : LayoutBuilder(

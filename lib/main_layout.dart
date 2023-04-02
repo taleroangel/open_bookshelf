@@ -51,9 +51,10 @@ class _MainLayoutState extends State<MainLayout> {
             _currentIndex = selectedIndex;
           }),
           children: const [
-            BookshelfScreen(BookCollection.reading),
-            BookshelfScreen(BookCollection.wishlist),
-            BookshelfScreen(BookCollection.read),
+            BookshelfScreen(),
+            BookshelfScreen(filter: BookCollection.reading),
+            BookshelfScreen(filter: BookCollection.wishlist),
+            BookshelfScreen(filter: BookCollection.read),
             AboutScreen()
           ],
         ),
@@ -66,8 +67,9 @@ class _MainLayoutState extends State<MainLayout> {
       }),
       destinations: [
         NavigationDestination(
-            icon: const Icon(Icons.menu_book_rounded),
-            label: t.navigation.reading),
+            icon: const Icon(Icons.shelves), label: t.navigation.bookshelf),
+        NavigationDestination(
+            icon: const Icon(Icons.auto_stories), label: t.navigation.reading),
         NavigationDestination(
             icon: const Icon(Icons.lightbulb_sharp),
             label: t.navigation.wishlist),

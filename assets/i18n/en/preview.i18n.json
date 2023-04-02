@@ -1,3 +1,20 @@
 {
-	"not_selected": "Select a book"
+	"not_selected": "Select a book",
+	"submenu": {
+		"barcode_item": "ISBN Barcode",
+		"visit_on_openlibrary": "Visit on OpenLibrary",
+		"contribute_on_openlibrary": "Contribute to OpenLibrary"
+	},
+	"barcode": {
+		"title": "ISBN Barcode Preview",
+		"description": "The International Standard Book Number (ISBN) is a 13-digit number that uniquely identifies books and book-like products published internationally."
+	},
+	"contribute": {
+		"title": "Contribute to OpenLibrary",
+		"summary": "The currently selected book is not registered in OpenLibrary, please consider adding it.",
+		"what_is_openlibrary": "OpenLibrary is an open-source digital library project that aims to create a comprehensive online catalog of every book ever published. Its mission is to preserve knowledge and cultural heritage for future generations by making books and other media accessible to anyone with an internet connection.",
+		"why_contribute": "By contributing to OpenLibrary, you can help preserve the world's knowledge and cultural heritage for future generations, making it accessible to everyone regardless of their location or financial resources.",
+		"skip": "Maybe later",
+		"contribute": "How to contribute?"
+	}
 }

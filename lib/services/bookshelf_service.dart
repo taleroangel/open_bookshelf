@@ -7,9 +7,7 @@ import 'package:open_bookshelf/exceptions/failed_to_fetch_content_exception.dart
 import 'package:open_bookshelf/exceptions/image_not_present_in_cache_exception.dart';
 import 'package:open_bookshelf/exceptions/resource_already_exists_exception.dart';
 import 'package:open_bookshelf/services/storage_service.dart';
-
-/* --------- API Endpoints --------- */
-const _coverEndpoint = "https://covers.openlibrary.org/b/isbn/%%-M.jpg";
+import 'package:open_bookshelf/constants/endpoints.dart' as endpoints;
 
 /// Provide services for Bookshelf data fetching
 class BookshelfService {
@@ -23,9 +21,10 @@ class BookshelfService {
     return bytes.buffer.asUint8List();
   }
 
-  /// Fetch a cover by its book ISBN using [_coverEndpoint] as URL
+  /// Fetch a cover by its book ISBN
   Future<Uint8List> _fetchCoverFromInternet(String isbn) async {
-    final uri = Uri.parse(_coverEndpoint.replaceAll("%%", isbn));
+    final uri = Uri.parse(
+        endpoints.openLibrary["cover_endpoint"]!.replaceAll("%%", isbn));
     final response = // Search and replace %% characters in URL
         await http.get(uri);
     // If response was returned
