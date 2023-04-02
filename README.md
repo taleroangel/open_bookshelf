@@ -1,17 +1,24 @@
 # open_bookshelf
-#C1B0A2
+Digital bookshelf application that utilizes the OpenLibrary API to help users manage their reading lists. The app provides an interface for users to search for books by ISBN and add them to their shelves, whether it be read, reading, or wishlist.
 
-A new Flutter project.
+## 🏗️ Compilation
 
-## Getting Started
+__'flutter_native_splash'__ and __'flutter_launcher_icons'__ require building before running the application, use the following commands:
 
-This project is a starting point for a Flutter application.
+```sh
+flutter pub get
+flutter pub run flutter_native_splash:create
+flutter pub run flutter_launcher_icons
+```
 
-A few resources to get you started if this is your first Flutter project:
+### Release Build
+In order to relese build the app you need to precompile the SKSL shaders, you can use the provided __'flutter_01.sksl.json'__ file or provide your own via the command:
+```sh
+flutter run --profile --cache-sksl --purge-persistent-cache --dump-skp-on-shader-compilation
+```
+Trigger as much animations as you can and then press __M__ inside the command-line to export the __'flutter_01.sksl.json'__ file
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Then compile the __.apk__ application using the following command
+```sh
+flutter build apk --obfuscate --split-debug-info=build/app/output/symbols --no-track-widget-creation --release --bundle-sksl-path flutter_01.sksl.json --no-tree-shake-icons -v
+```
