@@ -1,5 +1,22 @@
 {
-	"backup": {
-		"title": "Backup"
+	"local_storage": {
+		"title": "Local Storage",
+		"subtitle": "Details about locally stored books",
+		"books_stored": "You have a total of $books books stored",
+		"bookshelf_size": "Library database size is $size KiB",
+		"cover_cache_size": "Cover cache size is $size KiB",
+		"button_compact": "Compact database",
+		"button_delete_cache": "Delete the cache",
+		"success_compact": "Database compaction was successful",
+		"failed_compact": "Error: Database compation failed",
+		"confirm_cache_deletion": "Are you sure you want to delete the cache?\nImages will be downloaded once again from internet",
+		"failed_cache": "Error: Failed to delete cache",
+		"success_cache": "Cache deleted successfully"
+	},
+	"export_import": {
+		"title": "Export/Import",
+		"subtitle": "Export or Import .json database schema",
+		"import": "Import",
+		"export": "Export"
 	}
 }

@@ -5,7 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:faker/faker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/services/bookshelf_service.dart';
+import 'package:open_bookshelf/services/cache_storage_service.dart';
 
 part 'book.freezed.dart';
 part 'book.g.dart';
@@ -50,7 +50,7 @@ class Book with _$Book {
   }) = _Book;
 
   Book._();
-  late final image = GetIt.I.get<BookshelfService>().fetchCover(cover);
+  late final image = GetIt.I.get<CacheStorageService>().fetchCover(cover);
 
   factory Book.fromJson(Map<String, Object?> json) => _$BookFromJson(json);
 

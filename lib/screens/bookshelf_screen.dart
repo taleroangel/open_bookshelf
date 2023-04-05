@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
@@ -15,62 +16,66 @@ class BookshelfScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BookshelfProvider>(
-      builder: (context, provider, child) {
-        // Take only books where collection is same as filter
-        final bookshelf = (filter != null
-                ? provider.books.values
-                    .where((value) => (value.collection == filter))
-                : provider.books.values)
-            // Map values to widgets
-            .map((e) => BookPickWidget(
-                book: e,
-                onTap: (book) {
-                  provider.selectedBook = book;
-                  // Dispatch book selection notification
-                  context.dispatchNotification(OnBookSelectionNotification());
-                }))
-            .toList();
+    final provider = context.read<BookshelfProvider>();
 
-        return Scaffold(
-            appBar: AppBar(
-                title: Text(filter == null
-                    ? t.navigation.bookshelf
-                    : BookCollection.getLabel(filter!))),
-            body: bookshelf.isEmpty
-                ? child
-                : LayoutBuilder(
-                    builder: (_, constraints) {
-                      return GridView.count(
-                          crossAxisCount: constraints.maxWidth ~/ _boxSize,
-                          padding: const EdgeInsets.all(2 * _gridSpacing),
-                          childAspectRatio: _boxAspectRatio,
-                          mainAxisSpacing: 2 * _gridSpacing,
-                          crossAxisSpacing: _gridSpacing,
-                          children: bookshelf);
-                    },
-                  ));
-      },
-      child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Icon(Icons.report,
-                  size: 60.0,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onBackground
-                      .withAlpha(200)),
-            ),
-            Text(
-              t.bookshelf.no_books,
-              style: Theme.of(context).textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(filter == null
+              ? t.navigation.bookshelf
+              : BookCollection.getLabel(filter!))),
+      body: ValueListenableBuilder<Box<Book>>(
+        valueListenable: provider.bookshelf.listenable(),
+        builder: (context, value, child) {
+          // Filter bookshelf
+          final bookshelf = (filter != null
+                  ? provider.bookshelf.values
+                      .where((value) => (value.collection == filter))
+                  : provider.bookshelf.values)
+              .map((e) => BookPickWidget(
+                  book: e,
+                  onTap: (book) {
+                    provider.selectedBook = book;
+                    // Dispatch book selection notification
+                    context.dispatchNotification(OnBookSelectionNotification());
+                  }))
+              .toList();
+
+          // Create layout
+          return bookshelf.isEmpty
+              ? child!
+              : LayoutBuilder(
+                  builder: (_, constraints) {
+                    return GridView.count(
+                        crossAxisCount: constraints.maxWidth ~/ _boxSize,
+                        padding: const EdgeInsets.all(2 * _gridSpacing),
+                        childAspectRatio: _boxAspectRatio,
+                        mainAxisSpacing: 2 * _gridSpacing,
+                        crossAxisSpacing: _gridSpacing,
+                        children: bookshelf);
+                  },
+                );
+        },
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Icon(Icons.report,
+                    size: 60.0,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onBackground
+                        .withAlpha(200)),
+              ),
+              Text(
+                t.bookshelf.no_books,
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

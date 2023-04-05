@@ -14,6 +14,7 @@ class BookScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Watch state from provider
     final bookshelfProvider = context.watch<BookshelfProvider>();
     final Book? book = bookshelfProvider.selectedBook;
 
