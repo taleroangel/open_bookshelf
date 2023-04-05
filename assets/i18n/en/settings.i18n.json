@@ -17,6 +17,9 @@
 		"title": "Export/Import",
 		"subtitle": "Export or Import .json database schema",
 		"import": "Import",
-		"export": "Export"
+		"export": "Export",
+		"failed_export": "Failed to export the database",
+		"success_export": "Successfully exported file to: $path",
+		"failed_import": "Failed to import the database"
 	}
 }

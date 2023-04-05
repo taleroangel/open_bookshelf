@@ -1,0 +1,12 @@
+{
+	"title": "Add a new book",
+	"openlibrary": {
+		"title": "Search on OpenLibrary",
+		"subtitle": "Book by ISBN",
+		"submit": "Check on OpenLibrary"
+	},
+	"manual": {
+		"title": "Manually add a book",
+		"subtitle": "Manually add your book details"
+	}
+}

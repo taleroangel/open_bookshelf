@@ -5,20 +5,31 @@ class DescriptionCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.child,
+    this.dividerHeight,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.padding = const EdgeInsets.all(16.0),
+    this.margin,
     super.key,
   });
 
   final String title;
   final String subtitle;
   final Widget? child;
+  final double? dividerHeight;
+  final EdgeInsetsGeometry padding;
+  final CrossAxisAlignment crossAxisAlignment;
+  final EdgeInsetsGeometry? margin;
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: margin,
       child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: padding,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: crossAxisAlignment,
             children: [
               Text(
                 title,
@@ -28,7 +39,9 @@ class DescriptionCard extends StatelessWidget {
                 subtitle,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
-              const Divider(),
+              Divider(
+                height: dividerHeight,
+              ),
               if (child != null) child!
             ],
           )),

@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:open_bookshelf/services/book_database_service.dart';
-import 'package:open_bookshelf/widgets/description_card.dart';
+import 'package:open_bookshelf/widgets/description_card_widget.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/services/cache_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -37,9 +41,45 @@ class SettingsScreen extends StatelessWidget {
 class _ExportImport extends StatelessWidget {
   const _ExportImport();
 
-  void export() {}
+  void export(BuildContext context) async {
+    final scaffold = ScaffoldMessenger.of(context);
 
-  void import() {}
+    // Get database json
+    final databaseJson = GetIt.I.get<BookDatabaseService>().getDatabaseJson();
+    final platformDirectory = await (Platform.isAndroid
+        ? getExternalStorageDirectory()
+        : getDownloadsDirectory());
+
+    if (platformDirectory == null) {
+      scaffold.showSnackBar(
+          SnackBar(content: Text(t.settings.export_import.failed_export)));
+      return;
+    }
+
+    // Create a timestamp
+    final timestamp = DateTime.now().toUtc().toString().split(' ')[0];
+    final file =
+        File('${platformDirectory.path}/openbookshelf_backup_$timestamp.json');
+
+    // Create and write files
+    await file.create();
+    await file.writeAsString(jsonEncode(databaseJson));
+
+    // Show success
+    scaffold.showSnackBar(SnackBar(
+        content:
+            Text(t.settings.export_import.success_export(path: file.path))));
+  }
+
+  void import(BuildContext context) {
+    // TODO: Implement
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.error,
+        content: Text(
+          "Operation is not yet supported",
+          style: TextStyle(color: Theme.of(context).colorScheme.onError),
+        )));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +87,11 @@ class _ExportImport extends StatelessWidget {
       spacing: 4.0,
       children: [
         ElevatedButton.icon(
-            onPressed: export,
+            onPressed: () => export(context),
             icon: const Icon(Icons.upload_file_rounded),
             label: Text(t.settings.export_import.export)),
         ElevatedButton.icon(
-            onPressed: import,
+            onPressed: () => import(context),
             icon: const Icon(Icons.file_open_rounded),
             label: Text(t.settings.export_import.import))
       ],

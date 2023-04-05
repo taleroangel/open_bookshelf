@@ -1,0 +1,4 @@
+{
+	"error_invalid_format": "The provided value is not a valid $format",
+	"error_empty_field": "Please enter some value"
+}

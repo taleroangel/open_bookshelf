@@ -27,4 +27,7 @@ class BookDatabaseService {
             .length()) /
         1024;
   }
+
+  Map<dynamic, dynamic> getDatabaseJson() =>
+      _database.toMap().map((key, value) => MapEntry(key, value.toJson()));
 }

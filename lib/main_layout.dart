@@ -4,6 +4,7 @@ import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/providers/sideview_provider.dart';
+import 'package:open_bookshelf/screens/add_book_screen.dart';
 import 'package:open_bookshelf/screens/settings_screen.dart';
 import 'package:open_bookshelf/screens/book_screen.dart';
 import 'package:open_bookshelf/screens/bookshelf_screen.dart';
@@ -44,19 +45,28 @@ class _MainLayoutState extends State<MainLayout> {
           }
           return true;
         },
-        child: PageView(
-          controller: _pageController,
-          scrollDirection: Axis.horizontal,
-          onPageChanged: (selectedIndex) => setState(() {
-            _currentIndex = selectedIndex;
-          }),
-          children: const [
-            BookshelfScreen(),
-            BookshelfScreen(filter: BookCollection.reading),
-            BookshelfScreen(filter: BookCollection.wishlist),
-            BookshelfScreen(filter: BookCollection.read),
-            SettingsScreen()
-          ],
+        child: Scaffold(
+          floatingActionButton: _currentIndex < 4
+              ? FloatingActionButton(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const AddBookScreen(),
+                      )),
+                  child: const Icon(Icons.add))
+              : null,
+          body: PageView(
+            controller: _pageController,
+            scrollDirection: Axis.horizontal,
+            onPageChanged: (selectedIndex) => setState(() {
+              _currentIndex = selectedIndex;
+            }),
+            children: const [
+              BookshelfScreen(),
+              BookshelfScreen(filter: BookCollection.reading),
+              BookshelfScreen(filter: BookCollection.wishlist),
+              BookshelfScreen(filter: BookCollection.read),
+              SettingsScreen()
+            ],
+          ),
         ),
       ),
       selectedIndex: _currentIndex,
