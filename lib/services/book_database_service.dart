@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 class BookDatabaseService {
   static const localDatabaseBoxName = 'bookshelf';
 
-  final Box<Book> _database;
+  Box<Book> _database;
   BookDatabaseService._(this._database);
 
   Box<Book> get database => _database;
@@ -26,6 +26,11 @@ class BookDatabaseService {
     return (await File("${supportDirectory.path}/$localDatabaseBoxName.hive")
             .length()) /
         1024;
+  }
+
+  Future<void> deleteDatabase() async {
+    await _database.deleteFromDisk();
+    _database = await Hive.openBox<Book>(localDatabaseBoxName);
   }
 
   Map<dynamic, dynamic> getDatabaseJson() =>

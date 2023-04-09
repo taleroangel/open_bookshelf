@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:logger/logger.dart';
+import 'package:open_bookshelf/providers/bookshelf_provider.dart';
+import 'package:open_bookshelf/providers/sideview_provider.dart';
 import 'package:open_bookshelf/services/book_database_service.dart';
 import 'package:open_bookshelf/widgets/description_card_widget.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
@@ -8,6 +11,7 @@ import 'package:open_bookshelf/services/cache_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -109,30 +113,7 @@ class _LocalStorage extends StatefulWidget {
 class _LocalStorageState extends State<_LocalStorage> {
   bool compactingDatabase = false;
   bool clearingCache = false;
-
-  void compactDatabase() async {
-    setState(() => (compactingDatabase = true)); // Set state to compaction
-
-    // Start a compaction
-    try {
-      // Store scaffold messenger
-      final contextScaffold = ScaffoldMessenger.of(context);
-      // Compact and wait for an extra second for animation purposes
-      await GetIt.I
-          .get<BookDatabaseService>()
-          .database
-          .compact()
-          .then((_) => Future.delayed(const Duration(seconds: 1)));
-      // Show success
-      contextScaffold.showSnackBar(
-          SnackBar(content: Text(t.settings.local_storage.success_compact)));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.settings.local_storage.failed_compact)));
-    } finally {
-      setState(() => (compactingDatabase = false)); // Set state back to normal
-    }
-  }
+  bool deletingDatabase = false;
 
   Future<bool> clearCache() async {
     setState(() => (clearingCache = true)); // Set state to compaction
@@ -158,12 +139,62 @@ class _LocalStorageState extends State<_LocalStorage> {
             .deleteCache(StorageSource.imageCache);
   }
 
+  void compactDatabase() async {
+    setState(() => (compactingDatabase = true)); // Set state to compaction
+
+    // Start a compaction
+    try {
+      // Store scaffold messenger
+      final contextScaffold = ScaffoldMessenger.of(context);
+      // Compact and wait for an extra second for animation purposes
+      await GetIt.I
+          .get<BookDatabaseService>()
+          .database
+          .compact()
+          .then((_) => Future.delayed(const Duration(seconds: 1)));
+      // Show success
+      contextScaffold.showSnackBar(
+          SnackBar(content: Text(t.settings.local_storage.success_compact)));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t.settings.local_storage.failed_compact)));
+    } finally {
+      setState(() => (compactingDatabase = false)); // Set state back to normal
+    }
+  }
+
+  void deleteDatabase() async {
+    setState(() => (deletingDatabase = true)); // Set state to compaction
+    final response = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(t.settings.local_storage.confirm_database_deletion),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(t.navigation.cancel_button)),
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                t.navigation.delete_button,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              )),
+        ],
+      ),
+    );
+    if (response == true) {
+      await GetIt.I.get<BookDatabaseService>().deleteDatabase();
+    }
+    setState(() => (deletingDatabase = false));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Ammount of books stored
         Text(t.settings.local_storage.books_stored(
             books: GetIt.I.get<BookDatabaseService>().database.length)),
 
@@ -172,7 +203,7 @@ class _LocalStorageState extends State<_LocalStorage> {
             future: GetIt.I.get<BookDatabaseService>().getDatabaseSize(),
             builder: (context, snapshot) => Text(t.settings.local_storage
                 .bookshelf_size(
-                    size: snapshot.data?.toStringAsPrecision(2) ?? "..."))),
+                    size: snapshot.data?.toStringAsFixed(2) ?? "..."))),
 
         // Size of the cache
         FutureBuilder(
@@ -181,13 +212,16 @@ class _LocalStorageState extends State<_LocalStorage> {
                 .getCacheSize(StorageSource.imageCache),
             builder: (context, snapshot) => Text(t.settings.local_storage
                 .cover_cache_size(
-                    size: snapshot.data?.toStringAsPrecision(2) ?? "..."))),
+                    size: snapshot.data?.toStringAsFixed(2) ?? "..."))),
 
         const SizedBox(
           height: 8.0,
         ),
+
+        // Buttons
         Column(
           children: [
+            // Delete cache button
             TextButton(
                 onPressed: () => clearCache().then((value) {
                       setState(() =>
@@ -210,6 +244,8 @@ class _LocalStorageState extends State<_LocalStorage> {
                     Text(t.settings.local_storage.button_delete_cache),
                   ],
                 )),
+
+            // Compact database button
             TextButton(
                 onPressed: compactDatabase,
                 child: Row(
@@ -223,7 +259,27 @@ class _LocalStorageState extends State<_LocalStorage> {
                       ),
                     Text(t.settings.local_storage.button_compact),
                   ],
-                ))
+                )),
+
+            // Button to delete the database
+            TextButton(
+                onPressed: deleteDatabase,
+                child: Row(
+                  children: [
+                    if (deletingDatabase)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 16.0),
+                        child: SizedBox.square(
+                            dimension: 16.0,
+                            child: CircularProgressIndicator()),
+                      ),
+                    Text(
+                      t.settings.local_storage.button_delete_database,
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.error),
+                    ),
+                  ],
+                )),
           ],
         )
       ],

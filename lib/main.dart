@@ -1,20 +1,30 @@
+// Flutter
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:dynamic_color/dynamic_color.dart';
-import 'package:get_it/get_it.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:logger/logger.dart';
-import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/main_layout.dart';
+
+// Providers
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/providers/sideview_provider.dart';
+
+// Services
 import 'package:open_bookshelf/services/cache_storage_service.dart';
 import 'package:open_bookshelf/services/book_database_service.dart';
+import 'package:open_bookshelf/services/book_api_service.dart';
+
+// Other
+import 'package:open_bookshelf/i18n/translations.g.dart';
+import 'package:open_bookshelf/main_layout.dart';
 import 'package:open_bookshelf/theme.dart';
+
+// Packages
+import 'package:get_it/get_it.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   // Flutter is initialized
@@ -31,7 +41,8 @@ void main() async {
       printer: PrettyPrinter(),
       level: kDebugMode ? Level.debug : Level.warning));
 
-  // GetIt register async dependencies
+  // GetIt register other dependencies
+  GetIt.I.registerSingleton(BookApiService());
   GetIt.I.registerSingletonAsync(CacheStorageService.getInstance);
   GetIt.I.registerSingletonAsync(BookDatabaseService.getInstance);
   GetIt.I.registerSingletonAsync(SharedPreferences.getInstance);
@@ -50,19 +61,18 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
         builder: (lightDynamic, darkDynamic) => MultiProvider(
-              providers: [
-                ChangeNotifierProvider(create: (_) => SideviewProvider()),
-                ChangeNotifierProvider(create: (_) => BookshelfProvider())
-              ],
-              builder: (_, __) => MaterialApp(
-                locale: TranslationProvider.of(context).flutterLocale,
-                supportedLocales: AppLocaleUtils.supportedLocales,
-                localizationsDelegates: GlobalMaterialLocalizations.delegates,
-                theme: customThemeData(lightDynamic, Brightness.light),
-                darkTheme: customThemeData(darkDynamic, Brightness.dark),
-                themeMode: ThemeMode.system,
-                home: const MainLayout(),
-              ),
-            ));
+                providers: [
+                  ChangeNotifierProvider(create: (_) => SideviewProvider()),
+                  ChangeNotifierProvider(create: (_) => BookshelfProvider())
+                ],
+                builder: (context, child) => MaterialApp(
+                    locale: TranslationProvider.of(context).flutterLocale,
+                    supportedLocales: AppLocaleUtils.supportedLocales,
+                    localizationsDelegates:
+                        GlobalMaterialLocalizations.delegates,
+                    theme: customThemeData(lightDynamic, Brightness.light),
+                    darkTheme: customThemeData(darkDynamic, Brightness.dark),
+                    themeMode: ThemeMode.system,
+                    home: const MainLayout())));
   }
 }

@@ -40,6 +40,7 @@ class Book with _$Book {
   // Freezed book constructor
   factory Book({
     required final String title,
+    final String? subtitle,
     required final String isbn,
     final String? url,
     @Default([]) final List<String> authors,
@@ -58,6 +59,7 @@ class Book with _$Book {
     final faker = Faker();
     return Book(
       title: faker.lorem.sentence(),
+      subtitle: faker.lorem.sentence(),
       url: Random().nextInt(2) == 1 ? faker.internet.httpsUrl() : null,
       authors: List.generate(3, (index) => faker.person.name()),
       publishers: List.generate(2, (index) => faker.company.name()),

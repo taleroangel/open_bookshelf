@@ -16,16 +16,13 @@ class BookshelfScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<BookshelfProvider>();
-
     return Scaffold(
       appBar: AppBar(
           title: Text(filter == null
               ? t.navigation.bookshelf
               : BookCollection.getLabel(filter!))),
-      body: ValueListenableBuilder<Box<Book>>(
-        valueListenable: provider.bookshelf.listenable(),
-        builder: (context, value, child) {
+      body: Consumer<BookshelfProvider>(
+        builder: (context, provider, child) {
           // Filter bookshelf
           final bookshelf = (filter != null
                   ? provider.bookshelf.values

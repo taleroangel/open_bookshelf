@@ -1,6 +1,11 @@
 {
 	"not_selected": "Select a book",
 	"not_int_openlibrary": "Not present in OpenLibrary",
+	"delete": {
+		"confirm": "Are you sure you want to delete this book?",
+		"success": "Book was deleted successfully",
+		"failure": "Failed to delete book"
+	},
 	"submenu": {
 		"barcode_item": "ISBN Barcode",
 		"visit_on_openlibrary": "Visit on OpenLibrary",

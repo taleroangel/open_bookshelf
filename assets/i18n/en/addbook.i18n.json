@@ -1,12 +1,17 @@
 {
 	"title": "Add a new book",
+	"already_exists": "Book already exists in your library",
 	"openlibrary": {
 		"title": "Search on OpenLibrary",
 		"subtitle": "Book by ISBN",
-		"submit": "Check on OpenLibrary"
+		"submit": "Check on OpenLibrary",
+		"not_found": "Couldn't find book on OpenLibrary"
 	},
 	"manual": {
 		"title": "Manually add a book",
 		"subtitle": "Manually add your book details"
+	},
+	"preview": {
+		"add_book": "Add this book"
 	}
 }

@@ -6,5 +6,7 @@
 	"favorites": "Favorites",
 	"settings": "Settings",
 	"ok_button": "OK",
-	"cancel_button": "Cancel"
+	"delete_button": "Delete",
+	"cancel_button": "Cancel",
+	"copied_clipboard": "Copied to Clipboard"
 }

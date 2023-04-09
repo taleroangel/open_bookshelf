@@ -35,7 +35,7 @@ class CacheStorageService {
     return CacheStorageService._();
   }
 
-  /// Get the size of the specified cache in KiB
+  /// Get the size of the specified cache in MiB
   Future<double> getCacheSize(StorageSource storageSource) async {
     final List<Future<int>> sizes = []; // Store size of elements
     // Create source directory
@@ -58,7 +58,7 @@ class CacheStorageService {
     final futures = await Future.wait(sizes);
     return futures.isEmpty
         ? 0
-        : futures.reduce((value, element) => value + element) / 1024;
+        : futures.reduce((value, element) => value + element) / (1024 * 1024);
   }
 
   /// Delete the cache, requires app restart

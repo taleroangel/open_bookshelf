@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:logger/logger.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:open_bookshelf/models/book.dart';
+import 'package:open_bookshelf/screens/book_screen.dart';
+import 'package:open_bookshelf/services/book_api_service.dart';
+import 'package:open_bookshelf/services/book_database_service.dart';
 import 'package:open_bookshelf/widgets/description_card_widget.dart';
 
 class AddBookScreen extends StatelessWidget {
@@ -74,9 +80,11 @@ class _ISBNQuerySearch extends StatefulWidget {
 class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _controller;
+  final bookDatabase = GetIt.I.get<BookDatabaseService>();
 
-  String _isbn = '';
-  bool _isValidISBN = false;
+  String isbn = '';
+  bool isValidISBN = false;
+  bool serchingBook = false;
 
   @override
   void initState() {
@@ -91,8 +99,67 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
   }
 
   void searchBook() {
-    // TODO: Implement book
-    throw UnimplementedError();
+    // Search if book is present in database
+    if (bookDatabase.database.get(isbn) != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(t.addbook.already_exists)));
+      Navigator.of(context).pop();
+      return;
+    }
+
+    // Book api service
+    GetIt.I
+        .get<BookApiService>()
+        .fetchBookFromOpenLibrary(isbn)
+        .then((Book? value) {
+      if (value == null) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  content: Text(
+                    t.addbook.openlibrary.not_found,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: Navigator.of(context).pop,
+                        child: Text(
+                          t.navigation.ok_button,
+                        ))
+                  ],
+                ));
+      } else {
+        // Found book
+        GetIt.I.get<Logger>().i("Found book: ${value.title}");
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => BookScreen(
+            useThisBookInstead: value,
+            floatingActionButton: FloatingActionButton.extended(
+              label: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(t.addbook.preview.add_book),
+                  ),
+                  const Icon(Icons.add_circle_rounded)
+                ],
+              ),
+              onPressed: () async {
+                final navigator = Navigator.of(context);
+                // Add book to collection
+                await bookDatabase.database.put(value.isbn, value);
+                GetIt.I.get<Logger>().v("Added book with ISBN: ${value.isbn}");
+                // Exit to main screen
+                navigator.popUntil((route) => route.isFirst);
+              },
+            ),
+          ),
+        ));
+      }
+    }).onError((error, stackTrace) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.toString())));
+    });
   }
 
   @override
@@ -103,8 +170,8 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
         children: [
           BarcodeWidget(
             padding: const EdgeInsets.all(32.0),
-            data: _isbn,
-            barcode: _isValidISBN ? Barcode.isbn() : Barcode.code128(),
+            data: isbn,
+            barcode: isValidISBN ? Barcode.isbn() : Barcode.code128(),
             color: Theme.of(context).colorScheme.onSurface,
           ),
           const SizedBox(height: 16.0),
@@ -116,8 +183,8 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
             ),
             onChanged: (value) {
               setState(() {
-                _isValidISBN = false;
-                _isbn = value;
+                isValidISBN = false;
+                isbn = value;
               });
               _formKey.currentState?.validate();
             },
@@ -125,7 +192,7 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
               if (value == null || value.isEmpty) {
                 return t.forms.error_empty_field;
               } else if (Barcode.isbn().isValid(value)) {
-                setState(() => _isValidISBN = true);
+                setState(() => isValidISBN = true);
                 return null;
               } else {
                 return t.forms.error_invalid_format(format: 'ISBN');
@@ -137,17 +204,33 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
               style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary),
-              onPressed: !_isValidISBN
+              onPressed: !isValidISBN
                   ? null // Disable is not a valid ISBN
                   : // Enable on ISBN
                   () {
+                      setState(() => (serchingBook = true));
                       if (_formKey.currentState!.validate()) {
                         searchBook();
                       }
+                      setState(() => (serchingBook = false));
                     },
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(t.addbook.openlibrary.submit),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(t.addbook.openlibrary.submit),
+                  ),
+                  if (serchingBook)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: SizedBox.square(
+                          dimension: 16.0,
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          )),
+                    )
+                ],
               ))
         ],
       ),

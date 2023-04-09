@@ -16,13 +16,21 @@ class MainLayout extends StatefulWidget {
     super.key,
   });
 
+  static const navigationItems = [
+    BookshelfScreen(),
+    BookshelfScreen(filter: BookCollection.reading),
+    BookshelfScreen(filter: BookCollection.wishlist),
+    BookshelfScreen(filter: BookCollection.read),
+    SettingsScreen()
+  ];
+
   @override
   State<MainLayout> createState() => _MainLayoutState();
 }
 
 class _MainLayoutState extends State<MainLayout> {
   final _pageController = PageController();
-  int _currentIndex = 0;
+  int currentPageIndex = 0;
 
   @override
   void dispose() {
@@ -46,7 +54,8 @@ class _MainLayoutState extends State<MainLayout> {
           return true;
         },
         child: Scaffold(
-          floatingActionButton: _currentIndex < 4
+          floatingActionButton: MainLayout.navigationItems[currentPageIndex]
+                  is BookshelfScreen
               ? FloatingActionButton(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => const AddBookScreen(),
@@ -57,22 +66,22 @@ class _MainLayoutState extends State<MainLayout> {
             controller: _pageController,
             scrollDirection: Axis.horizontal,
             onPageChanged: (selectedIndex) => setState(() {
-              _currentIndex = selectedIndex;
+              currentPageIndex = selectedIndex;
             }),
-            children: const [
-              BookshelfScreen(),
-              BookshelfScreen(filter: BookCollection.reading),
-              BookshelfScreen(filter: BookCollection.wishlist),
-              BookshelfScreen(filter: BookCollection.read),
-              SettingsScreen()
-            ],
+            children: MainLayout.navigationItems,
           ),
         ),
       ),
-      selectedIndex: _currentIndex,
+      selectedIndex: currentPageIndex,
       onSelectedIndexChange: (selectedIndex) => setState(() {
-        _currentIndex = selectedIndex;
-        _pageController.animateToPage(_currentIndex,
+        // Disable book selection
+        if (MainLayout.navigationItems[selectedIndex] is SettingsScreen) {
+          context.read<BookshelfProvider>().selectedBook = null;
+        }
+        // Change the index
+        currentPageIndex = selectedIndex;
+        // Animate to page
+        _pageController.animateToPage(currentPageIndex,
             duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
       }),
       destinations: [

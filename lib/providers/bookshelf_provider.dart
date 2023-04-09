@@ -21,7 +21,20 @@ class BookshelfProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  BookshelfProvider() {
+    _databaseService.database.listenable().addListener(() {
+      notifyListeners();
+    });
+  }
+
   Box<Book> get bookshelf => _databaseService.database;
+
+  Future<bool> deleteCurrentBook() async {
+    if (_selectedBook == null) return false;
+    await _databaseService.database.delete(_selectedBook!.isbn);
+    selectedBook = null;
+    return true;
+  }
 
   void updateBookCollection(BookCollection bookCollection) {
     // Update the selected book
