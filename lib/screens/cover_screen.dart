@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Show an [InteractiveViewer] of an [Image]
 class CoverScreen extends StatelessWidget {
   final Widget child;
   const CoverScreen({required this.child, super.key});

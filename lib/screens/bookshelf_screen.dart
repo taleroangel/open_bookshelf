@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
@@ -10,6 +9,9 @@ const _gridSpacing = 4.0;
 const _boxSize = 160;
 const _boxAspectRatio = 0.65;
 
+/// Widget to show a list of [Book] stored in the Bookshelf, books can be filtered
+/// using a [BookCollection] as a filter parameter, setting this paramter as null
+/// shows all books
 class BookshelfScreen extends StatelessWidget {
   final BookCollection? filter;
   const BookshelfScreen({this.filter, super.key});
@@ -23,21 +25,23 @@ class BookshelfScreen extends StatelessWidget {
               : BookCollection.getLabel(filter!))),
       body: Consumer<BookshelfProvider>(
         builder: (context, provider, child) {
-          // Filter bookshelf
+          // Filter bookshelf by collection
           final bookshelf = (filter != null
                   ? provider.bookshelf.values
                       .where((value) => (value.collection == filter))
                   : provider.bookshelf.values)
+              // wrap books into a BookPickWidget
               .map((e) => BookPickWidget(
                   book: e,
                   onTap: (book) {
-                    provider.selectedBook = book;
+                    // Set selected book as current book
+                    provider.currentlySelectedBook = book;
                     // Dispatch book selection notification
                     context.dispatchNotification(OnBookSelectionNotification());
                   }))
               .toList();
 
-          // Create layout
+          // Create layout as a grid of books
           return bookshelf.isEmpty
               ? child!
               : LayoutBuilder(
@@ -52,6 +56,8 @@ class BookshelfScreen extends StatelessWidget {
                   },
                 );
         },
+
+        // When bookshelf is empty
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

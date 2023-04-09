@@ -6,6 +6,8 @@ import 'package:open_bookshelf/screens/cover_screen.dart';
 import 'package:open_bookshelf/widgets/exception_widget.dart';
 import 'package:provider/provider.dart';
 
+//TODO: Check and improve
+//TODO: Expand image
 class BookCoverWidget extends StatefulWidget {
   const BookCoverWidget({this.selectedBook, super.key});
 
@@ -32,7 +34,7 @@ class _BookCoverWidgetState extends State<BookCoverWidget> {
   Widget build(BuildContext context) {
     final provider = context.watch<BookshelfProvider>();
     return FutureBuilder(
-        future: (widget.selectedBook ?? provider.selectedBook)?.image,
+        future: (widget.selectedBook ?? provider.currentlySelectedBook)?.image,
         builder: (context, snapshot) {
           // If connectoin was successfull, then store image in internal cache
           if (snapshot.connectionState == ConnectionState.done) {

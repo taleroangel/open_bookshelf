@@ -5,27 +5,29 @@ import 'package:logger/logger.dart';
 import 'package:open_bookshelf/exceptions/failed_to_fetch_content_exception.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:http/http.dart' as http;
-import 'package:open_bookshelf/constants/endpoints.dart' as endpoints;
+import 'package:open_bookshelf/constants/endpoints.dart';
 
-class BookApiService {
-  Future<Book?> fetchBookFromOpenLibrary(String isbn) async {
-    // HTTP Response
+/// Service class with abstractions to handle the OpenLibrary's API
+class OpenlibraryService {
+  /// Fetch a [Book] by it's ISBN from OpenLibrary's Book API
+  Future<Book?> fetchBook(String isbn) async {
     try {
-      // Response from HTTP
       GetIt.I.get<Logger>().i("OpenLibrary API ISBN request in progress");
-      final httpResponse = await http.get(Uri.parse(
-          endpoints.openLibrary["isbn_endpoint"]!.replaceAll("%%", isbn)));
+      // Response from HTTP
+      final httpResponse =
+          await http.get(Uri.parse(OpenLibraryEndpoints.isbnEndpoint(isbn)));
 
       if (httpResponse.statusCode == 200) {
         // Decode json body
         final decodedBody = jsonDecode(httpResponse.body);
 
-        // If no response
+        // OpenLibrary API won't return 404 on failure,
+        // instead it will return an empty body so handle that here
         if (decodedBody.isEmpty) {
           return null;
         }
 
-        // Parse contents
+        // Parse contents as a Map<>
         Map<String, dynamic> apiResponse =
             (decodedBody as Map<String, dynamic>).values.first;
 
@@ -48,10 +50,11 @@ class BookApiService {
           "subjects": apiResponse['details']['subject'] ?? []
         });
       } else {
-        // Return a null value
+        // Return a null value i.e no book was found
         return null;
       }
     } catch (e) {
+      // Failed to parse book information, thats an error
       GetIt.I.get<Logger>().e("Failed to fetch data from OpenLibrary: $e");
       throw FailedToFetchContentException(resource: isbn);
     }

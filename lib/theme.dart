@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+const fallbackPrimaryColor = Color(0xFFC1B0A2);
+
 customThemeData(ColorScheme? colorScheme,
     [Brightness brightness = Brightness.light]) {
   final customColorScheme = colorScheme ??
       ColorScheme.fromSeed(
-          seedColor: const Color(0xFFC1B0A2), brightness: brightness);
+          seedColor: fallbackPrimaryColor, brightness: brightness);
   return ThemeData(
       useMaterial3: true,
       colorScheme: customColorScheme,

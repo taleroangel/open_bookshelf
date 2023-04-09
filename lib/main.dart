@@ -10,7 +10,7 @@ import 'package:open_bookshelf/providers/sideview_provider.dart';
 // Services
 import 'package:open_bookshelf/services/cache_storage_service.dart';
 import 'package:open_bookshelf/services/book_database_service.dart';
-import 'package:open_bookshelf/services/book_api_service.dart';
+import 'package:open_bookshelf/services/openlibrary_service.dart';
 
 // Other
 import 'package:open_bookshelf/i18n/translations.g.dart';
@@ -33,7 +33,7 @@ void main() async {
   // Initialize Locale
   LocaleSettings.useDeviceLocale();
 
-  // Initialize Hive database
+  // Initialize Hive database inside support directory
   await Hive.initFlutter((await getApplicationSupportDirectory()).path);
 
   // Logger
@@ -42,7 +42,7 @@ void main() async {
       level: kDebugMode ? Level.debug : Level.warning));
 
   // GetIt register other dependencies
-  GetIt.I.registerSingleton(BookApiService());
+  GetIt.I.registerSingleton(OpenlibraryService());
   GetIt.I.registerSingletonAsync(CacheStorageService.getInstance);
   GetIt.I.registerSingletonAsync(BookDatabaseService.getInstance);
   GetIt.I.registerSingletonAsync(SharedPreferences.getInstance);

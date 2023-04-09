@@ -10,9 +10,10 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Displays a book provided by [BookshelfProvider], if 'useThisBookInstead' parameter is non-null,
+/// that book is asumed not to be present in database and [BookshelfProvided will be ignored], instead
+/// changes will be made directly to provided book and database functionality is disabled
 class BookScreen extends StatelessWidget {
-  /// Displays a book provided by [BookshelfProvider], if 'useThisBookInstead' parameter is non-null,
-  /// that book is asumed not to be present in database and [BookshelfProvided will be ignored]
   const BookScreen(
       {this.useThisBookInstead, this.floatingActionButton, super.key});
 
@@ -22,138 +23,140 @@ class BookScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<BookshelfProvider>(
-        child: Scaffold(
-          body: Center(
-              child: Text(
-            t.book.not_selected,
-            style: Theme.of(context).textTheme.headlineLarge,
-          )),
-        ),
-        builder: (context, bookshelfProvider, child) {
-          // Book currently selectted
-          final Book? book =
-              useThisBookInstead ?? bookshelfProvider.selectedBook;
-          return book == null
-              // Empty scaffold for null books
-              ? child!
-              // Book details
-              : Scaffold(
-                  appBar: AppBar(
-                    title: Text(book.title),
-                    actions: [
-                      if (useThisBookInstead == null) const _DeleteBookButton(),
-                      _PopupMenu(book)
-                    ],
-                  ),
-                  floatingActionButton: floatingActionButton,
-                  body: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
-                      child: Column(children: [
-                        // Collection detector
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: StatefulBuilder(
-                            builder: (context, setState) =>
-                                SegmentedButton<BookCollection>(
-                              segments: BookCollection.values
-                                  .map((e) => ButtonSegment<BookCollection>(
-                                      value: e,
-                                      icon: Icon(e.icon),
-                                      label: Text(BookCollection.getLabel(e))))
-                                  .toList(),
-                              selected: {book.collection},
-                              onSelectionChanged: (collection) {
-                                if (useThisBookInstead == null) {
-                                  bookshelfProvider
-                                      .updateBookCollection(collection.first);
-                                } else {
-                                  setState(() {
-                                    book.collection = collection.first;
-                                  });
-                                }
-                              },
+      builder: (context, bookshelfProvider, child) {
+        // Book currently selected, either provided via parameter or present in database
+        final Book? book =
+            useThisBookInstead ?? bookshelfProvider.currentlySelectedBook;
+
+        // If no book is selected
+        return book == null
+            // Empty scaffold for null books
+            ? child!
+            // Book details
+            : Scaffold(
+                appBar: AppBar(
+                  title: Text(book.title),
+                  actions: [
+                    // If book is present in database then deletion is possible
+                    if (useThisBookInstead == null) const _DeleteBookButton(),
+                    // Show an action menu
+                    _PopupMenu(book)
+                  ],
+                ),
+                floatingActionButton: floatingActionButton,
+                body: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0),
+                    child: Column(children: [
+                      // Collection detector
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: StatefulBuilder(
+                          builder: (context, setState) =>
+                              SegmentedButton<BookCollection>(
+                            segments: BookCollection.values
+                                .map((e) => ButtonSegment<BookCollection>(
+                                    value: e,
+                                    icon: Icon(e.icon),
+                                    label: Text(BookCollection.getLabel(e))))
+                                .toList(),
+                            selected: {book.collection},
+                            onSelectionChanged: (collection) {
+                              if (useThisBookInstead == null) {
+                                bookshelfProvider
+                                    .updateBookCollection(collection.first);
+                              } else {
+                                setState(() {
+                                  book.collection = collection.first;
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+
+                      // Show Cover
+                      Expanded(
+                          child: BookCoverWidget(
+                        selectedBook: useThisBookInstead,
+                      )),
+
+                      // Show title
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: book.title,
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
-                          ),
-                        ),
-
-                        // Show Cover
-                        Expanded(
-                            child: BookCoverWidget(
-                          selectedBook: useThisBookInstead,
-                        )),
-
-                        // Show title
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(children: [
+                            if (book.url == null)
                               TextSpan(
-                                text: book.title,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                              if (book.url == null)
-                                TextSpan(
-                                  text: "\n${t.book.not_int_openlibrary}",
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                                )
-                            ]),
-                          ),
+                                text: "\n${t.book.not_in_openlibrary}",
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                              )
+                          ]),
                         ),
+                      ),
 
-                        const Divider(height: 16.0),
+                      const Divider(height: 16.0),
 
-                        // Show ISBN
-                        GestureDetector(
-                          onTap: () =>
-                              Clipboard.setData(ClipboardData(text: book.isbn))
-                                  .then((value) => ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          content: Text(
-                                              t.navigation.copied_clipboard)))),
-                          child: TextWithIconWidget(
-                            icon: Icons.qr_code_2_rounded,
-                            text: "ISBN: ${book.isbn}",
-                          ),
+                      // Show ISBN
+                      GestureDetector(
+                        onTap: () =>
+                            Clipboard.setData(ClipboardData(text: book.isbn))
+                                .then((value) => ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                        content: Text(
+                                            t.general.misc.copied_clipboard)))),
+                        child: TextWithIconWidget(
+                          icon: Icons.qr_code_2_rounded,
+                          text: "ISBN: ${book.isbn}",
                         ),
+                      ),
 
-                        // Show Publishers
-                        if (book.publishers.isNotEmpty)
-                          TextWithIconWidget(
-                              icon: Icons.storefront_rounded,
-                              text: book.publishers.reduce(
-                                  (value, element) => "$value, $element")),
+                      // Show Publishers
+                      if (book.publishers.isNotEmpty)
+                        TextWithIconWidget(
+                            icon: Icons.storefront_rounded,
+                            text: book.publishers.reduce(
+                                (value, element) => "$value, $element")),
 
-                        // Show authors
-                        if (book.authors.isNotEmpty)
-                          TextWithIconWidget(
-                              icon: Icons.people,
-                              text: book.authors.reduce(
-                                  (value, element) => "$value, $element")),
+                      // Show authors
+                      if (book.authors.isNotEmpty)
+                        TextWithIconWidget(
+                            icon: Icons.people,
+                            text: book.authors.reduce(
+                                (value, element) => "$value, $element")),
 
-                        // Show subjects
-                        if (book.subjects.isNotEmpty)
-                          TextWithIconWidget(
-                              icon: Icons.sell_rounded,
-                              text: book.subjects.reduce(
-                                  (value, element) => "$value, $element")),
-                      ]),
-                    ),
+                      // Show subjects
+                      if (book.subjects.isNotEmpty)
+                        TextWithIconWidget(
+                            icon: Icons.sell_rounded,
+                            text: book.subjects.reduce(
+                                (value, element) => "$value, $element")),
+                    ]),
                   ),
-                );
-        });
+                ),
+              );
+      },
+      // No book selected
+      child: Scaffold(
+        body: Center(
+            child: Text(
+          t.book.not_selected,
+          style: Theme.of(context).textTheme.headlineLarge,
+        )),
+      ),
+    );
   }
 }
 
 class _DeleteBookButton extends StatelessWidget {
-  const _DeleteBookButton({
-    super.key,
-  });
+  const _DeleteBookButton();
 
   @override
   Widget build(BuildContext context) {
@@ -166,11 +169,11 @@ class _DeleteBookButton extends StatelessWidget {
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: Text(t.navigation.cancel_button)),
+                          child: Text(t.general.button.cancel)),
                       TextButton(
                           onPressed: () => Navigator.of(context).pop(true),
                           child: Text(
-                            t.navigation.delete_button,
+                            t.general.button.delete,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.error),
                           )),
@@ -305,11 +308,11 @@ class _ContributeAlertDialog extends StatelessWidget {
           onPressed: () {
             launchUrl(
                     mode: LaunchMode.externalApplication,
-                    Uri.parse(openLibrary['contribute']!))
+                    Uri.parse(OpenLibraryEndpoints.contribute))
                 .onError((error, stackTrace) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content:
-                      Text("URL: ${openLibrary['contribute']}\nError:$error")));
+                  content: Text(
+                      "URL: ${OpenLibraryEndpoints.contribute}\nError:$error")));
               return true;
             });
             Navigator.of(context).pop();
@@ -348,7 +351,7 @@ class _BarcodePreviewAlertDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
                 text: TextSpan(children: [
                   TextSpan(
-                      text: t.errors.failed_barcode,
+                      text: t.general.misc.failed_barcode,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.error)),
                   TextSpan(
@@ -362,7 +365,7 @@ class _BarcodePreviewAlertDialog extends StatelessWidget {
       actions: [
         TextButton(
             onPressed: Navigator.of(context).pop,
-            child: Text(t.navigation.ok_button))
+            child: Text(t.general.button.ok))
       ],
     );
   }

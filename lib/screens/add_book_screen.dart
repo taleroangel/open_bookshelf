@@ -6,7 +6,7 @@ import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/screens/book_screen.dart';
-import 'package:open_bookshelf/services/book_api_service.dart';
+import 'package:open_bookshelf/services/openlibrary_service.dart';
 import 'package:open_bookshelf/services/book_database_service.dart';
 import 'package:open_bookshelf/widgets/description_card_widget.dart';
 
@@ -108,10 +108,7 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
     }
 
     // Book api service
-    GetIt.I
-        .get<BookApiService>()
-        .fetchBookFromOpenLibrary(isbn)
-        .then((Book? value) {
+    GetIt.I.get<OpenlibraryService>().fetchBook(isbn).then((Book? value) {
       if (value == null) {
         showDialog(
             context: context,
@@ -124,7 +121,7 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
                     TextButton(
                         onPressed: Navigator.of(context).pop,
                         child: Text(
-                          t.navigation.ok_button,
+                          t.general.button.ok,
                         ))
                   ],
                 ));
@@ -190,12 +187,12 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return t.forms.error_empty_field;
+                return t.general.forms.error.empty_field;
               } else if (Barcode.isbn().isValid(value)) {
                 setState(() => isValidISBN = true);
                 return null;
               } else {
-                return t.forms.error_invalid_format(format: 'ISBN');
+                return t.general.forms.error.invalid_format(format: 'ISBN');
               }
             },
           ),

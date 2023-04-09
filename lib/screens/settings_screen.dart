@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:logger/logger.dart';
-import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/providers/sideview_provider.dart';
 import 'package:open_bookshelf/services/book_database_service.dart';
 import 'package:open_bookshelf/widgets/description_card_widget.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
@@ -11,8 +8,8 @@ import 'package:open_bookshelf/services/cache_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 
+/// Show app settings
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -25,6 +22,7 @@ class SettingsScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                // Export and Import the database
                 DescriptionCard(
                   title: t.settings.export_import.title,
                   subtitle: t.settings.export_import.subtitle,
@@ -42,6 +40,7 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
+/// Export or Import database Settings
 class _ExportImport extends StatelessWidget {
   const _ExportImport();
 
@@ -56,7 +55,7 @@ class _ExportImport extends StatelessWidget {
 
     if (platformDirectory == null) {
       scaffold.showSnackBar(
-          SnackBar(content: Text(t.settings.export_import.failed_export)));
+          SnackBar(content: Text(t.settings.export_import.export.failed)));
       return;
     }
 
@@ -72,7 +71,7 @@ class _ExportImport extends StatelessWidget {
     // Show success
     scaffold.showSnackBar(SnackBar(
         content:
-            Text(t.settings.export_import.success_export(path: file.path))));
+            Text(t.settings.export_import.export.success(path: file.path))));
   }
 
   void import(BuildContext context) {
@@ -93,16 +92,17 @@ class _ExportImport extends StatelessWidget {
         ElevatedButton.icon(
             onPressed: () => export(context),
             icon: const Icon(Icons.upload_file_rounded),
-            label: Text(t.settings.export_import.export)),
+            label: Text(t.settings.export_import.export.button)),
         ElevatedButton.icon(
             onPressed: () => import(context),
             icon: const Icon(Icons.file_open_rounded),
-            label: Text(t.settings.export_import.import))
+            label: Text(t.settings.export_import.import.button))
       ],
     );
   }
 }
 
+/// Alter local storage settings
 class _LocalStorage extends StatefulWidget {
   const _LocalStorage();
 
@@ -115,32 +115,49 @@ class _LocalStorageState extends State<_LocalStorage> {
   bool clearingCache = false;
   bool deletingDatabase = false;
 
-  Future<bool> clearCache() async {
+  Future<void> clearCache() async {
     setState(() => (clearingCache = true)); // Set state to compaction
-    final response = await showDialog<bool>(
+
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // Show an AlertDialog for user confirmation
+    final userConfirmation = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        content: Text(t.settings.local_storage.confirm_cache_deletion),
+        content: Text(t.settings.local_storage.delete_cache.confirm),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.navigation.cancel_button)),
+              child: Text(t.general.button.cancel)),
           TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(t.navigation.ok_button)),
+              child: Text(
+                t.general.button.delete,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              )),
         ],
       ),
     );
-    // Delete the cache
-    return response == false
-        ? false // False if user did not accept
-        : await GetIt.I
-            .get<CacheStorageService>()
-            .deleteCache(StorageSource.imageCache);
+
+    // If user confirmed deletion, delete Cache
+    if (userConfirmation == true) {
+      // Try to delete the cache
+      bool cacheWasDeleted = await GetIt.I
+          .get<CacheStorageService>()
+          .deleteCache(StorageSource.imageCache);
+      // Show snackbar
+      scaffoldMessenger.showSnackBar(SnackBar(
+          content: Text(cacheWasDeleted
+              ? t.settings.local_storage.delete_cache.success
+              : t.settings.local_storage.delete_cache.failed)));
+    }
+
+    setState(() => (clearingCache = false)); // Set state to compaction
   }
 
   void compactDatabase() async {
-    setState(() => (compactingDatabase = true)); // Set state to compaction
+    // Set state to compaction
+    setState(() => (compactingDatabase = true));
 
     // Start a compaction
     try {
@@ -153,11 +170,11 @@ class _LocalStorageState extends State<_LocalStorage> {
           .compact()
           .then((_) => Future.delayed(const Duration(seconds: 1)));
       // Show success
-      contextScaffold.showSnackBar(
-          SnackBar(content: Text(t.settings.local_storage.success_compact)));
+      contextScaffold.showSnackBar(SnackBar(
+          content: Text(t.settings.local_storage.compact_database.success)));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.settings.local_storage.failed_compact)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(t.settings.local_storage.compact_database.failed)));
     } finally {
       setState(() => (compactingDatabase = false)); // Set state back to normal
     }
@@ -165,23 +182,27 @@ class _LocalStorageState extends State<_LocalStorage> {
 
   void deleteDatabase() async {
     setState(() => (deletingDatabase = true)); // Set state to compaction
+
+    // Show AlertDialog for user confirmation
     final response = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        content: Text(t.settings.local_storage.confirm_database_deletion),
+        content: Text(t.settings.local_storage.delete_database.confirm),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.navigation.cancel_button)),
+              child: Text(t.general.button.cancel)),
           TextButton(
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(
-                t.navigation.delete_button,
+                t.general.button.delete,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               )),
         ],
       ),
     );
+
+    // Wait for database deletion if user confirmed
     if (response == true) {
       await GetIt.I.get<BookDatabaseService>().deleteDatabase();
     }
@@ -197,14 +218,12 @@ class _LocalStorageState extends State<_LocalStorage> {
         // Ammount of books stored
         Text(t.settings.local_storage.books_stored(
             books: GetIt.I.get<BookDatabaseService>().database.length)),
-
         // Size of the database
         FutureBuilder(
             future: GetIt.I.get<BookDatabaseService>().getDatabaseSize(),
             builder: (context, snapshot) => Text(t.settings.local_storage
                 .bookshelf_size(
                     size: snapshot.data?.toStringAsFixed(2) ?? "..."))),
-
         // Size of the cache
         FutureBuilder(
             future: GetIt.I
@@ -223,15 +242,7 @@ class _LocalStorageState extends State<_LocalStorage> {
           children: [
             // Delete cache button
             TextButton(
-                onPressed: () => clearCache().then((value) {
-                      setState(() =>
-                          (clearingCache = false)); // Set state to compaction
-                      return ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text((value == false)
-                                  ? t.settings.local_storage.failed_cache
-                                  : t.settings.local_storage.success_cache)));
-                    }),
+                onPressed: clearCache,
                 child: Row(
                   children: [
                     if (clearingCache)
@@ -241,7 +252,7 @@ class _LocalStorageState extends State<_LocalStorage> {
                             dimension: 16.0,
                             child: CircularProgressIndicator()),
                       ),
-                    Text(t.settings.local_storage.button_delete_cache),
+                    Text(t.settings.local_storage.delete_cache.button),
                   ],
                 )),
 
@@ -257,7 +268,7 @@ class _LocalStorageState extends State<_LocalStorage> {
                             dimension: 16.0,
                             child: CircularProgressIndicator()),
                       ),
-                    Text(t.settings.local_storage.button_compact),
+                    Text(t.settings.local_storage.compact_database.button),
                   ],
                 )),
 
@@ -274,7 +285,7 @@ class _LocalStorageState extends State<_LocalStorage> {
                             child: CircularProgressIndicator()),
                       ),
                     Text(
-                      t.settings.local_storage.button_delete_database,
+                      t.settings.local_storage.delete_database.button,
                       style:
                           TextStyle(color: Theme.of(context).colorScheme.error),
                     ),

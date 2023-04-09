@@ -3,6 +3,7 @@ import 'package:open_bookshelf/models/book.dart';
 
 const _titlePadding = 16.0;
 
+//TODO: Check and improve
 class BookPickWidget extends StatelessWidget {
   const BookPickWidget({required this.book, required this.onTap, super.key});
 

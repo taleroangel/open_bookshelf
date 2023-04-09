@@ -1,0 +1,18 @@
+{
+	"button": {
+		"ok": "OK",
+		"delete": "Delete",
+		"cancel": "Cancel"
+	},
+	"forms": {
+		"error": {
+			"invalid_format": "The provided value is not a valid $format",
+			"empty_field": "Please enter some value"
+		}
+	},
+	"misc": {
+		"exception": "An exception was thrown",
+		"failed_barcode": "Barcode failed to generate",
+		"copied_clipboard": "Copied to Clipboard"
+	}
+}

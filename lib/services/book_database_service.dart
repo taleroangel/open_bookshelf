@@ -20,7 +20,7 @@ class BookDatabaseService {
         await Hive.openBox<Book>(localDatabaseBoxName));
   }
 
-  /// Get the database size
+  /// Get the database size in KiB
   Future<double> getDatabaseSize() async {
     final supportDirectory = await getApplicationSupportDirectory();
     return (await File("${supportDirectory.path}/$localDatabaseBoxName.hive")

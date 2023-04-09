@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 
+/// Show an [Exception] in a [Card] following the [Theme]'s error colors
 class ExceptionWidget extends StatelessWidget {
   const ExceptionWidget({required this.exception, super.key});
   final Exception? exception;
@@ -14,7 +15,7 @@ class ExceptionWidget extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              t.errors.exception,
+              t.general.misc.exception,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text(exception.runtimeType.toString()),

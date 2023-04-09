@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:faker/faker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/services/cache_storage_service.dart';
@@ -46,7 +45,7 @@ class Book with _$Book {
     @Default([]) final List<String> authors,
     @Default([]) final List<String> publishers,
     @Default([]) final List<String> subjects,
-    final String? cover,
+    String? cover,
     @Default(BookCollection.wishlist) BookCollection collection,
   }) = _Book;
 
@@ -54,18 +53,4 @@ class Book with _$Book {
   late final image = GetIt.I.get<CacheStorageService>().fetchCover(cover);
 
   factory Book.fromJson(Map<String, Object?> json) => _$BookFromJson(json);
-
-  factory Book.dummy() {
-    final faker = Faker();
-    return Book(
-      title: faker.lorem.sentence(),
-      subtitle: faker.lorem.sentence(),
-      url: Random().nextInt(2) == 1 ? faker.internet.httpsUrl() : null,
-      authors: List.generate(3, (index) => faker.person.name()),
-      publishers: List.generate(2, (index) => faker.company.name()),
-      subjects: List.generate(6, (index) => faker.lorem.word()),
-      isbn: faker.guid.random.fromPattern(['#############']),
-      collection: BookCollection.random(),
-    );
-  }
 }

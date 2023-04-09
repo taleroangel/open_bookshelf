@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Material [Card] with a [Text] title and subtitle
 class DescriptionCard extends StatelessWidget {
   const DescriptionCard({
     required this.title,

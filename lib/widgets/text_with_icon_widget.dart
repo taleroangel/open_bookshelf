@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Show an [Icon] followed by a [Text]
 class TextWithIconWidget extends StatelessWidget {
   const TextWithIconWidget({
     required this.icon,

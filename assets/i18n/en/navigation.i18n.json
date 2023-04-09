@@ -4,9 +4,5 @@
 	"wishlist": "Wishlist",
 	"read": "Read",
 	"favorites": "Favorites",
-	"settings": "Settings",
-	"ok_button": "OK",
-	"delete_button": "Delete",
-	"cancel_button": "Cancel",
-	"copied_clipboard": "Copied to Clipboard"
+	"settings": "Settings"
 }
