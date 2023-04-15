@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:logger/logger.dart';
-import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/services/book_database_service.dart';
+import 'package:open_bookshelf/models/book.dart';
+import 'package:open_bookshelf/models/tag.dart';
 
 /// Notification class for when a book is selected
 class OnBookSelectionNotification extends Notification {}
@@ -11,10 +12,16 @@ class OnBookSelectionNotification extends Notification {}
 class BookshelfProvider extends ChangeNotifier {
   BookshelfProvider() {
     // Change to the database also prompts changes to the listeners
+    _tags = _databaseService.fetchTags();
     _databaseService.database.listenable().addListener(() {
+      _tags = _databaseService.fetchTags();
       notifyListeners();
     });
   }
+
+  // Tags cache
+  Set<Tag> _tags = {};
+  Set<Tag> get tags => _tags;
 
   /// Currently selected book
   Book? _currentlySelectedBook;
@@ -45,6 +52,15 @@ class BookshelfProvider extends ChangeNotifier {
     _databaseService.database
         .put(_currentlySelectedBook!.isbn, _currentlySelectedBook!);
     // Notify Listeners
+    notifyListeners();
+    GetIt.I.get<Logger>().i(
+        "$runtimeType: Updated book with ISBN: ${_currentlySelectedBook?.isbn}");
+  }
+
+  void addOrRemoveBookTag(Tag tag) {
+    _currentlySelectedBook!.addOrRemoveTag(tag);
+    _databaseService.database
+        .put(_currentlySelectedBook!.isbn, _currentlySelectedBook!);
     notifyListeners();
     GetIt.I.get<Logger>().i(
         "$runtimeType: Updated book with ISBN: ${_currentlySelectedBook?.isbn}");

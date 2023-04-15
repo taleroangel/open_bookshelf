@@ -7,6 +7,7 @@ customThemeData(ColorScheme? colorScheme,
   final customColorScheme = colorScheme ??
       ColorScheme.fromSeed(
           seedColor: fallbackPrimaryColor, brightness: brightness);
+
   return ThemeData(
       useMaterial3: true,
       colorScheme: customColorScheme,

@@ -1,3 +1,9 @@
 {
-	"no_books": "There is no books here..."
+	"no_books": "There are no books here...",
+	"collections": {
+		"none": "None",
+		"reading": "Reading",
+		"wishlist": "Wishlist",
+		"read": "Read"
+	}
 }

@@ -5,7 +5,7 @@ import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:open_bookshelf/models/book.dart';
-import 'package:open_bookshelf/screens/book_screen.dart';
+import 'package:open_bookshelf/screens/other/book_screen.dart';
 import 'package:open_bookshelf/services/openlibrary_service.dart';
 import 'package:open_bookshelf/services/book_database_service.dart';
 import 'package:open_bookshelf/widgets/description_card_widget.dart';
@@ -131,23 +131,50 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => BookScreen(
             useThisBookInstead: value,
-            floatingActionButton: FloatingActionButton.extended(
-              label: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(t.addbook.preview.add_book),
+            // Show a FAB to add the Book to the library, this button is
+            // extended when a large layout is detected
+            floatingActionButton: SlotLayout(
+              config: <Breakpoint, SlotLayoutConfig>{
+                Breakpoints.smallAndUp: SlotLayout.from(
+                    key: const Key('small_body'),
+                    //TODO: Move the on pressed method somewhere else, same code is repeated below
+                    builder: (_) => FloatingActionButton(
+                          child: const Icon(Icons.add_circle_rounded),
+                          onPressed: () async {
+                            final navigator = Navigator.of(context);
+                            // Add book to collection
+                            await bookDatabase.database.put(value.isbn, value);
+                            GetIt.I
+                                .get<Logger>()
+                                .v("Added book with ISBN: ${value.isbn}");
+                            // Exit to main screen
+                            navigator.popUntil((route) => route.isFirst);
+                          },
+                        )),
+                Breakpoints.large: SlotLayout.from(
+                  key: const Key('large_body'),
+                  builder: (_) => FloatingActionButton.extended(
+                    label: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(t.addbook.preview.add_book),
+                        ),
+                        const Icon(Icons.add_circle_rounded)
+                      ],
+                    ),
+                    onPressed: () async {
+                      final navigator = Navigator.of(context);
+                      // Add book to collection
+                      await bookDatabase.database.put(value.isbn, value);
+                      GetIt.I
+                          .get<Logger>()
+                          .v("Added book with ISBN: ${value.isbn}");
+                      // Exit to main screen
+                      navigator.popUntil((route) => route.isFirst);
+                    },
                   ),
-                  const Icon(Icons.add_circle_rounded)
-                ],
-              ),
-              onPressed: () async {
-                final navigator = Navigator.of(context);
-                // Add book to collection
-                await bookDatabase.database.put(value.isbn, value);
-                GetIt.I.get<Logger>().v("Added book with ISBN: ${value.isbn}");
-                // Exit to main screen
-                navigator.popUntil((route) => route.isFirst);
+                )
               },
             ),
           ),
@@ -205,6 +232,7 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
                   ? null // Disable is not a valid ISBN
                   : // Enable on ISBN
                   () {
+                      //TODO: SearchingBook state not working
                       setState(() => (serchingBook = true));
                       if (_formKey.currentState!.validate()) {
                         searchBook();

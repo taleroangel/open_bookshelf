@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/providers/sideview_provider.dart';
-import 'package:open_bookshelf/screens/add_book_screen.dart';
-import 'package:open_bookshelf/screens/settings_screen.dart';
-import 'package:open_bookshelf/screens/book_screen.dart';
-import 'package:open_bookshelf/screens/bookshelf_screen.dart';
+import 'package:open_bookshelf/screens/other/add_book_screen.dart';
+import 'package:open_bookshelf/screens/main/search_screen.dart';
+import 'package:open_bookshelf/screens/main/settings_screen.dart';
+import 'package:open_bookshelf/screens/other/book_screen.dart';
+import 'package:open_bookshelf/screens/main/bookshelf_screen.dart';
+import 'package:open_bookshelf/screens/main/label_screen.dart';
 import 'package:open_bookshelf/widgets/sideview_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -23,9 +24,8 @@ class MainLayout extends StatefulWidget {
   /// Pages to be shown in the [PageView]
   static const navigationItems = [
     BookshelfScreen(),
-    BookshelfScreen(filter: BookCollection.reading),
-    BookshelfScreen(filter: BookCollection.wishlist),
-    BookshelfScreen(filter: BookCollection.read),
+    LabelsScreen(),
+    SearchScreen(),
     SettingsScreen()
   ];
 
@@ -107,12 +107,9 @@ class _MainLayoutState extends State<MainLayout> {
         NavigationDestination(
             icon: const Icon(Icons.shelves), label: t.navigation.bookshelf),
         NavigationDestination(
-            icon: const Icon(Icons.auto_stories), label: t.navigation.reading),
+            icon: const Icon(Icons.label), label: t.navigation.labels),
         NavigationDestination(
-            icon: const Icon(Icons.lightbulb_sharp),
-            label: t.navigation.wishlist),
-        NavigationDestination(
-            icon: const Icon(Icons.book), label: t.navigation.read),
+            icon: const Icon(Icons.search), label: t.navigation.search),
         NavigationDestination(
             icon: const Icon(Icons.settings), label: t.navigation.settings),
       ],

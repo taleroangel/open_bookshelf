@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:hive_flutter/adapters.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/adapters/book_adapter.dart';
+import 'package:open_bookshelf/models/tag.dart';
 import 'package:path_provider/path_provider.dart';
 
 class BookDatabaseService {
@@ -27,6 +28,9 @@ class BookDatabaseService {
             .length()) /
         1024;
   }
+
+  Set<Tag> fetchTags() =>
+      database.values.map((e) => e.tags).expand((element) => element).toSet();
 
   Future<void> deleteDatabase() async {
     await _database.deleteFromDisk();

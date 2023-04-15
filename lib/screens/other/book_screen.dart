@@ -4,8 +4,10 @@ import 'package:open_bookshelf/constants/endpoints.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
+import 'package:open_bookshelf/widgets/collection_picker_widget.dart';
 import 'package:open_bookshelf/widgets/text_with_icon_widget.dart';
 import 'package:open_bookshelf/widgets/book_cover_widget.dart';
+import 'package:open_bookshelf/widgets/tag_picker_widget.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,102 +46,115 @@ class BookScreen extends StatelessWidget {
                   ],
                 ),
                 floatingActionButton: floatingActionButton,
-                body: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 18.0),
-                    child: Column(children: [
-                      // Collection detector
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: StatefulBuilder(
-                          builder: (context, setState) =>
-                              SegmentedButton<BookCollection>(
-                            segments: BookCollection.values
-                                .map((e) => ButtonSegment<BookCollection>(
-                                    value: e,
-                                    icon: Icon(e.icon),
-                                    label: Text(BookCollection.getLabel(e))))
-                                .toList(),
-                            selected: {book.collection},
-                            onSelectionChanged: (collection) {
+                body: Padding(
+                  padding: const EdgeInsets.only(bottom: 18.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        // Collection picker
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: CollectionPickerWidget(
+                            initialValue: book.collection,
+                            onSelect: (value) {
                               if (useThisBookInstead == null) {
-                                bookshelfProvider
-                                    .updateBookCollection(collection.first);
+                                bookshelfProvider.updateBookCollection(value);
                               } else {
-                                setState(() {
-                                  book.collection = collection.first;
-                                });
+                                book.collection = value;
                               }
                             },
                           ),
                         ),
-                      ),
 
-                      // Show Cover
-                      Expanded(
-                          child: BookCoverWidget(
-                        selectedBook: useThisBookInstead,
-                      )),
+                        // Show Cover
+                        Expanded(
+                            child: BookCoverWidget(
+                                useThisBookInstead: useThisBookInstead)),
 
-                      // Show title
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(children: [
-                            TextSpan(
-                              text: book.title,
-                              style: Theme.of(context).textTheme.headlineSmall,
-                            ),
-                            if (book.url == null)
+                        // Show title
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(children: [
                               TextSpan(
-                                text: "\n${t.book.not_in_openlibrary}",
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary),
-                              )
-                          ]),
+                                  text: book.title,
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
+                              if (book.subtitle != null)
+                                TextSpan(
+                                    text: "\n${book.subtitle}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium),
+                              if (book.url == null)
+                                TextSpan(
+                                  text: "\n${t.book.not_in_openlibrary}",
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                )
+                            ]),
+                          ),
                         ),
-                      ),
 
-                      const Divider(height: 16.0),
+                        const SizedBox(height: 16.0),
 
-                      // Show ISBN
-                      GestureDetector(
-                        onTap: () =>
-                            Clipboard.setData(ClipboardData(text: book.isbn))
-                                .then((value) => ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                        content: Text(
-                                            t.general.misc.copied_clipboard)))),
-                        child: TextWithIconWidget(
-                          icon: Icons.qr_code_2_rounded,
-                          text: "ISBN: ${book.isbn}",
+                        // Show ISBN
+                        GestureDetector(
+                          onTap: () => Clipboard.setData(
+                                  ClipboardData(text: book.isbn))
+                              .then((value) => ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      content: Text(
+                                          t.general.misc.copied_clipboard)))),
+                          child: TextWithIconWidget(
+                            icon: Icons.qr_code_2_rounded,
+                            text: "ISBN: ${book.isbn}",
+                          ),
                         ),
-                      ),
 
-                      // Show Publishers
-                      if (book.publishers.isNotEmpty)
-                        TextWithIconWidget(
-                            icon: Icons.storefront_rounded,
-                            text: book.publishers.reduce(
-                                (value, element) => "$value, $element")),
+                        // Show Publishers
+                        if (book.publishers.isNotEmpty)
+                          TextWithIconWidget(
+                              icon: Icons.storefront_rounded,
+                              text: book.publishers.reduce(
+                                  (value, element) => "$value, $element")),
 
-                      // Show authors
-                      if (book.authors.isNotEmpty)
-                        TextWithIconWidget(
-                            icon: Icons.people,
-                            text: book.authors.reduce(
-                                (value, element) => "$value, $element")),
+                        // Show authors
+                        if (book.authors.isNotEmpty)
+                          TextWithIconWidget(
+                              icon: Icons.people,
+                              text: book.authors.reduce(
+                                  (value, element) => "$value, $element")),
 
-                      // Show subjects
-                      if (book.subjects.isNotEmpty)
-                        TextWithIconWidget(
-                            icon: Icons.sell_rounded,
-                            text: book.subjects.reduce(
-                                (value, element) => "$value, $element")),
-                    ]),
-                  ),
+                        // Show subjects
+                        if (book.subjects.isNotEmpty)
+                          TextWithIconWidget(
+                              icon: Icons.sell_rounded,
+                              text: book.subjects.reduce(
+                                  (value, element) => "$value, $element")),
+
+                        // Tag picker
+                        SizedBox(
+                          height: 80.0,
+                          child: StatefulBuilder(
+                            builder: (context, setState) => TagPickerWidget(
+                              book: book,
+                              onSelect: (tag) {
+                                if (useThisBookInstead == null) {
+                                  bookshelfProvider.addOrRemoveBookTag(tag);
+                                } else {
+                                  setState(() =>
+                                      useThisBookInstead!.addOrRemoveTag(tag));
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ]),
                 ),
               );
       },
@@ -180,12 +195,17 @@ class _DeleteBookButton extends StatelessWidget {
                     ],
                   )).then((userConfirmed) {
             if (userConfirmed) {
-              context.read<BookshelfProvider>().deleteCurrentBook().then(
-                  (bookDeleteResult) => ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(
-                          content: Text(bookDeleteResult
-                              ? t.book.delete.success
-                              : t.book.delete.failure))));
+              context
+                  .read<BookshelfProvider>()
+                  .deleteCurrentBook()
+                  .then((bookDeleteResult) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(bookDeleteResult
+                        ? t.book.delete.success
+                        : t.book.delete.failure)));
+                // Get out of the screen, to main menu
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              });
             }
           });
         },

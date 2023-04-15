@@ -1,8 +1,6 @@
 {
 	"bookshelf": "Bookshelf",
-	"reading": "Reading",
-	"wishlist": "Wishlist",
-	"read": "Read",
-	"favorites": "Favorites",
-	"settings": "Settings"
+	"settings": "Settings",
+	"labels": "Labels",
+	"search": "Search"
 }

@@ -27,31 +27,35 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-  // Flutter is initialized
-  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    // Flutter is initialized
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Locale
-  LocaleSettings.useDeviceLocale();
+    // Initialize Locale
+    LocaleSettings.useDeviceLocale();
 
-  // Initialize Hive database inside support directory
-  await Hive.initFlutter((await getApplicationSupportDirectory()).path);
+    // Initialize Hive database inside support directory
+    await Hive.initFlutter((await getApplicationSupportDirectory()).path);
 
-  // Logger
-  GetIt.I.registerSingleton(Logger(
-      printer: PrettyPrinter(),
-      level: kDebugMode ? Level.debug : Level.warning));
+    // Logger
+    GetIt.I.registerSingleton(Logger(
+        printer: PrettyPrinter(),
+        level: kDebugMode ? Level.debug : Level.warning));
 
-  // GetIt register other dependencies
-  GetIt.I.registerSingleton(OpenlibraryService());
-  GetIt.I.registerSingletonAsync(CacheStorageService.getInstance);
-  GetIt.I.registerSingletonAsync(BookDatabaseService.getInstance);
-  GetIt.I.registerSingletonAsync(SharedPreferences.getInstance);
+    // GetIt register other dependencies
+    GetIt.I.registerSingleton(OpenlibraryService());
+    GetIt.I.registerSingletonAsync(CacheStorageService.getInstance);
+    GetIt.I.registerSingletonAsync(BookDatabaseService.getInstance);
+    GetIt.I.registerSingletonAsync(SharedPreferences.getInstance);
 
-  // Get all dependencies ready
-  await GetIt.I.allReady();
-
-  // Run the application
-  runApp(TranslationProvider(child: const Application()));
+    // Get all dependencies ready
+    await GetIt.I.allReady();
+    // Run the application
+    runApp(TranslationProvider(child: const Application()));
+  } catch (e) {
+    GetIt.I.get<Logger>().wtf("Dependency injection failed to initialize");
+    runApp(FailedApplication(exception: e));
+  }
 }
 
 class Application extends StatelessWidget {
@@ -74,5 +78,36 @@ class Application extends StatelessWidget {
                     darkTheme: customThemeData(darkDynamic, Brightness.dark),
                     themeMode: ThemeMode.system,
                     home: const MainLayout())));
+  }
+}
+
+class FailedApplication extends StatelessWidget {
+  const FailedApplication({required this.exception, super.key});
+
+  final Object? exception;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: customThemeData(null, Brightness.dark),
+      home: Scaffold(
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Icon(
+              Icons.warning_rounded,
+              color: fallbackPrimaryColor,
+              size: 150.0,
+            ),
+            Text(
+              exception.toString(),
+              textAlign: TextAlign.center,
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
