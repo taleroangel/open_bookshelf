@@ -1,13 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
-
+import 'package:logger/logger.dart';
 import 'package:open_bookshelf/services/book_database_service.dart';
+import 'package:open_bookshelf/services/settings_service.dart';
 import 'package:open_bookshelf/widgets/description_card_widget.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/services/cache_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:path_provider/path_provider.dart';
 
 /// Show app settings
 class SettingsScreen extends StatelessWidget {
@@ -44,34 +42,23 @@ class SettingsScreen extends StatelessWidget {
 class _ExportImport extends StatelessWidget {
   const _ExportImport();
 
-  void export(BuildContext context) async {
-    final scaffold = ScaffoldMessenger.of(context);
-
-    // Get database json
-    final databaseJson = GetIt.I.get<BookDatabaseService>().getDatabaseJson();
-    final platformDirectory = await (Platform.isAndroid
-        ? getExternalStorageDirectory()
-        : getDownloadsDirectory());
-
-    if (platformDirectory == null) {
-      scaffold.showSnackBar(
-          SnackBar(content: Text(t.settings.export_import.export.failed)));
-      return;
-    }
-
-    // Create a timestamp
-    final timestamp = DateTime.now().toUtc().toString().split(' ')[0];
-    final file =
-        File('${platformDirectory.path}/openbookshelf_backup_$timestamp.json');
-
-    // Create and write files
-    await file.create();
-    await file.writeAsString(jsonEncode(databaseJson));
-
-    // Show success
-    scaffold.showSnackBar(SnackBar(
-        content:
-            Text(t.settings.export_import.export.success(path: file.path))));
+  void export(BuildContext context) {
+    GetIt.I.get<SettingsService>().export().then((file) {
+      // Show a success Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text(t.settings.export_import.export.success(path: file.path))));
+    }).catchError((error) {
+      // Show a failure snackbar
+      GetIt.I.get<Logger>().e(error);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+        t.settings.export_import.export.failed,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onError,
+        ),
+      )));
+    });
   }
 
   void import(BuildContext context) {
@@ -160,24 +147,17 @@ class _LocalStorageState extends State<_LocalStorage> {
     setState(() => (compactingDatabase = true));
 
     // Start a compaction
-    try {
-      // Store scaffold messenger
-      final contextScaffold = ScaffoldMessenger.of(context);
-      // Compact and wait for an extra second for animation purposes
-      await GetIt.I
-          .get<BookDatabaseService>()
-          .database
-          .compact()
-          .then((_) => Future.delayed(const Duration(seconds: 1)));
+    GetIt.I.get<SettingsService>().databaseCompactation().then((_) {
       // Show success
-      contextScaffold.showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(t.settings.local_storage.compact_database.success)));
-    } catch (e) {
+    }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(t.settings.local_storage.compact_database.failed)));
-    } finally {
-      setState(() => (compactingDatabase = false)); // Set state back to normal
-    }
+    });
+
+    // Set state to compactation
+    setState(() => (compactingDatabase = false)); // Set state back to normal
   }
 
   void deleteDatabase() async {
@@ -204,8 +184,9 @@ class _LocalStorageState extends State<_LocalStorage> {
 
     // Wait for database deletion if user confirmed
     if (response == true) {
-      await GetIt.I.get<BookDatabaseService>().deleteDatabase();
+      await GetIt.I.get<SettingsService>().databaseController.deleteDatabase();
     }
+
     setState(() => (deletingDatabase = false));
   }
 
@@ -217,10 +198,11 @@ class _LocalStorageState extends State<_LocalStorage> {
       children: [
         // Ammount of books stored
         Text(t.settings.local_storage.books_stored(
-            books: GetIt.I.get<BookDatabaseService>().database.length)),
+            books: GetIt.I.get<SettingsService>().databaseController.length)),
         // Size of the database
         FutureBuilder(
-            future: GetIt.I.get<BookDatabaseService>().getDatabaseSize(),
+            future:
+                GetIt.I.get<SettingsService>().databaseController.databaseSize,
             builder: (context, snapshot) => Text(t.settings.local_storage
                 .bookshelf_size(
                     size: snapshot.data?.toStringAsFixed(2) ?? "..."))),

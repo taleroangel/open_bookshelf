@@ -15,6 +15,7 @@ import 'package:open_bookshelf/services/openlibrary_service.dart';
 // Other
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/main_layout.dart';
+import 'package:open_bookshelf/services/settings_service.dart';
 import 'package:open_bookshelf/theme.dart';
 
 // Packages
@@ -42,18 +43,26 @@ void main() async {
         printer: PrettyPrinter(),
         level: kDebugMode ? Level.debug : Level.warning));
 
-    // GetIt register other dependencies
+    // Register all services and dependencies
     GetIt.I.registerSingleton(OpenlibraryService());
     GetIt.I.registerSingletonAsync(CacheStorageService.getInstance);
     GetIt.I.registerSingletonAsync(BookDatabaseService.getInstance);
-    GetIt.I.registerSingletonAsync(SharedPreferences.getInstance);
+
+    // Services that depend on other services
+    await GetIt.I.isReady<BookDatabaseService>();
+    GetIt.I.registerSingleton(SettingsService(
+        databaseController: GetIt.I.get<BookDatabaseService>()));
 
     // Get all dependencies ready
     await GetIt.I.allReady();
+
     // Run the application
     runApp(TranslationProvider(child: const Application()));
   } catch (e) {
-    GetIt.I.get<Logger>().wtf("Dependency injection failed to initialize");
+    // Uncatched error
+    GetIt.I
+        .get<Logger>()
+        .wtf("Unhandled exception in main application isolate");
     runApp(FailedApplication(exception: e));
   }
 }

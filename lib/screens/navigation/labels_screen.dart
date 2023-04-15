@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
+import 'package:open_bookshelf/widgets/tag_item_widget.dart';
 import 'package:provider/provider.dart';
 
 class LabelsScreen extends StatelessWidget {
@@ -37,12 +38,10 @@ class LabelsScreen extends StatelessWidget {
             )
           : ListView.builder(
               itemCount: bookshelfProvider.tags.length,
-              itemBuilder: (context, index) {
-                final tag = bookshelfProvider.tags.elementAt(index);
-                return ListTile(
-                  title: Text(tag.name),
-                );
-              },
+              itemBuilder: (context, index) => TagItemWidget(
+                  key: ObjectKey(bookshelfProvider.tags.elementAt(index)),
+                  initExpanded: index == 0,
+                  tag: bookshelfProvider.tags.elementAt(index)),
             ),
     );
   }

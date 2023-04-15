@@ -142,6 +142,7 @@ class BookScreen extends StatelessWidget {
                           height: 80.0,
                           child: StatefulBuilder(
                             builder: (context, setState) => TagPickerWidget(
+                              showCreateTag: useThisBookInstead == null,
                               book: book,
                               onSelect: (tag) {
                                 if (useThisBookInstead == null) {

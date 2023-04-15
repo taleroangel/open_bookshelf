@@ -57,6 +57,7 @@ class BookshelfProvider extends ChangeNotifier {
         "$runtimeType: Updated book with ISBN: ${_currentlySelectedBook?.isbn}");
   }
 
+  /// Add or Remove a tag from the currently selected book
   void addOrRemoveBookTag(Tag tag) {
     _currentlySelectedBook!.addOrRemoveTag(tag);
     _databaseService.database
@@ -65,4 +66,7 @@ class BookshelfProvider extends ChangeNotifier {
     GetIt.I.get<Logger>().i(
         "$runtimeType: Updated book with ISBN: ${_currentlySelectedBook?.isbn}");
   }
+
+  List<Book> booksWithTag(Tag tag) =>
+      bookshelf.values.where((element) => element.tags.contains(tag)).toList();
 }

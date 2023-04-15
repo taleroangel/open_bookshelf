@@ -5,6 +5,9 @@ const _titlePadding = 16.0;
 
 //TODO: Check and improve
 class BookPickWidget extends StatelessWidget {
+  static const boxSize = 160;
+  static const boxAspectRatio = 0.65;
+
   const BookPickWidget({required this.book, required this.onTap, super.key});
 
   final Book book;

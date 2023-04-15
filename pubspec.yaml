@@ -33,6 +33,7 @@ dependencies:
   barcode_widget: ^2.0.3
   hive_flutter: ^1.1.0
   flutter_colorpicker: ^1.0.3
+  expandable: ^5.0.1
 
 dev_dependencies:
   flutter_test:

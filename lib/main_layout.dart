@@ -4,11 +4,11 @@ import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/providers/sideview_provider.dart';
 import 'package:open_bookshelf/screens/other/add_book_screen.dart';
-import 'package:open_bookshelf/screens/main/search_screen.dart';
-import 'package:open_bookshelf/screens/main/settings_screen.dart';
+import 'package:open_bookshelf/screens/navigation/search_screen.dart';
+import 'package:open_bookshelf/screens/navigation/settings_screen.dart';
 import 'package:open_bookshelf/screens/other/book_screen.dart';
-import 'package:open_bookshelf/screens/main/bookshelf_screen.dart';
-import 'package:open_bookshelf/screens/main/label_screen.dart';
+import 'package:open_bookshelf/screens/navigation/bookshelf_screen.dart';
+import 'package:open_bookshelf/screens/navigation/labels_screen.dart';
 import 'package:open_bookshelf/widgets/sideview_widget.dart';
 import 'package:provider/provider.dart';
 

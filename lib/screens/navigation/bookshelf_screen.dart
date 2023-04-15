@@ -7,8 +7,6 @@ import 'package:open_bookshelf/widgets/collection_picker_widget.dart';
 import 'package:provider/provider.dart';
 
 const _gridSpacing = 4.0;
-const _boxSize = 160;
-const _boxAspectRatio = 0.65;
 
 /// Widget to show a list of [Book] stored in the Bookshelf
 class BookshelfScreen extends StatelessWidget {
@@ -28,6 +26,7 @@ class BookshelfScreen extends StatelessWidget {
               .filterBooksByCollection(filter)
               // wrap books into a BookPickWidget
               .map((e) => BookPickWidget(
+                  key: ObjectKey(e),
                   book: e,
                   onTap: (book) {
                     // Set selected book as current book
@@ -80,11 +79,12 @@ class BookshelfScreen extends StatelessWidget {
                           : LayoutBuilder(
                               builder: (_, constraints) {
                                 return GridView.count(
-                                    crossAxisCount:
-                                        constraints.maxWidth ~/ _boxSize,
+                                    crossAxisCount: constraints.maxWidth ~/
+                                        BookPickWidget.boxSize,
                                     padding:
                                         const EdgeInsets.all(2 * _gridSpacing),
-                                    childAspectRatio: _boxAspectRatio,
+                                    childAspectRatio:
+                                        BookPickWidget.boxAspectRatio,
                                     mainAxisSpacing: 2 * _gridSpacing,
                                     crossAxisSpacing: _gridSpacing,
                                     children: bookshelf);

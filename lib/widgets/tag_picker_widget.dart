@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/tag.dart';
@@ -8,13 +9,19 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class TagPickerWidget extends StatelessWidget {
   const TagPickerWidget(
-      {required this.onSelect, required this.book, super.key});
+      {required this.onSelect,
+      required this.book,
+      super.key,
+      this.showCreateTag = true});
 
   final void Function(Tag selected) onSelect;
   final Book book;
+  final bool showCreateTag;
 
   @override
   Widget build(BuildContext context) {
+    final scrollController = ScrollController();
+
     final bookshelfProvider = context.watch<BookshelfProvider>();
     final tags = bookshelfProvider.tags.map((e) {
       return ActionChip(
@@ -24,8 +31,10 @@ class TagPickerWidget extends StatelessWidget {
         avatar: Container(
             decoration: BoxDecoration(shape: BoxShape.circle, color: e.color)),
       );
-    }).toList()
-      ..add(ActionChip(
+    }).toList();
+
+    if (showCreateTag) {
+      tags.add(ActionChip(
         label: Text(t.labels.add),
         avatar: const Icon(Icons.add),
         onPressed: () => showDialog(
@@ -48,14 +57,22 @@ class TagPickerWidget extends StatelessWidget {
           }
         }),
       ));
+    }
 
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      scrollDirection: Axis.horizontal,
-      itemCount: tags.length,
-      separatorBuilder: (context, index) => const SizedBox(width: 5.0),
-      itemBuilder: (context, index) => tags[index],
-      shrinkWrap: true,
+    return Scrollbar(
+      controller: scrollController,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        scrollDirection: Axis.horizontal,
+        child: ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          scrollDirection: Axis.horizontal,
+          itemCount: tags.length,
+          separatorBuilder: (context, index) => const SizedBox(width: 5.0),
+          itemBuilder: (context, index) => tags[index],
+          shrinkWrap: true,
+        ),
+      ),
     );
   }
 }
@@ -70,6 +87,7 @@ class _CreateTag extends StatelessWidget {
     var color = Theme.of(context).colorScheme.primary;
 
     return AlertDialog(
+      title: Text(t.labels.add),
       content: StatefulBuilder(
         builder: (context, setState) => Column(
           mainAxisSize: MainAxisSize.min,

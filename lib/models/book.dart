@@ -31,6 +31,12 @@ class Book with _$Book {
 
   factory Book.fromJson(Map<String, Object?> json) => _$BookFromJson(json);
 
+  @override
+  bool operator ==(Object other) => (other is Book) && (other.isbn == isbn);
+
+  @override
+  int get hashCode => isbn.hashCode;
+
   void addOrRemoveTag(Tag tag) {
     if (tags.contains(tag)) {
       tags = {...tags}..remove(tag);
