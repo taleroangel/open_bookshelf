@@ -1,4 +1,4 @@
-# open_bookshelf
+# Open Bookshelf
 Digital bookshelf application that utilizes the OpenLibrary API to help users manage their reading lists. The app provides an interface for users to search for books by ISBN and add them to their shelves, whether it be read, reading, or wishlist.
 
 ## 📝 Roadmap:
@@ -15,6 +15,9 @@ Digital bookshelf application that utilizes the OpenLibrary API to help users ma
 - [ ] Barcode automatic scanner in mobile devices
 - [ ] Search books and filter them
 - [ ] Import database from JSON with file picker
+- [ ] Add loading splash screen
+- [ ] Add icon
+- [ ] Add missing cover asset
 
 ## 🛠️ Code Generation
 Run the following commands in separate terminals and leave them running while coding so code generations happen when files change:

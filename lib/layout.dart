@@ -16,8 +16,8 @@ import 'package:provider/provider.dart';
 /// [SettingsScreen]) is shown in a [PageView], and a [BookScreen] is either
 /// shown in a side view controlled by [SideviewProvider] or pushed as
 /// a new [MaterialPageRoute] depending on screen size
-class MainLayout extends StatefulWidget {
-  const MainLayout({
+class Layout extends StatefulWidget {
+  const Layout({
     super.key,
   });
 
@@ -30,10 +30,10 @@ class MainLayout extends StatefulWidget {
   ];
 
   @override
-  State<MainLayout> createState() => _MainLayoutState();
+  State<Layout> createState() => _LayoutState();
 }
 
-class _MainLayoutState extends State<MainLayout> {
+class _LayoutState extends State<Layout> {
   final _pageController = PageController();
   int currentPageIndex = 0;
 
@@ -70,7 +70,7 @@ class _MainLayoutState extends State<MainLayout> {
         },
         child: Scaffold(
           // Show an 'Add Book' button in all BookshelfScreens
-          floatingActionButton: MainLayout.navigationItems[currentPageIndex]
+          floatingActionButton: Layout.navigationItems[currentPageIndex]
                   is BookshelfScreen
               ? FloatingActionButton(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
@@ -85,7 +85,7 @@ class _MainLayoutState extends State<MainLayout> {
             onPageChanged: (selectedIndex) => setState(() {
               currentPageIndex = selectedIndex;
             }),
-            children: MainLayout.navigationItems,
+            children: Layout.navigationItems,
           ),
         ),
       ),
@@ -94,7 +94,7 @@ class _MainLayoutState extends State<MainLayout> {
         // When the SettingsScreen is prompted then it should forget
         // the currently selected book, this is because deleting the database
         // or the images in caches may alter this data while in use
-        if (MainLayout.navigationItems[selectedIndex] is SettingsScreen) {
+        if (Layout.navigationItems[selectedIndex] is SettingsScreen) {
           context.read<BookshelfProvider>().currentlySelectedBook = null;
         }
         // Change the index

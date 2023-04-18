@@ -14,7 +14,7 @@ import 'package:open_bookshelf/services/openlibrary_service.dart';
 
 // Other
 import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/main_layout.dart';
+import 'package:open_bookshelf/layout.dart';
 import 'package:open_bookshelf/services/settings_service.dart';
 import 'package:open_bookshelf/theme.dart';
 
@@ -25,7 +25,6 @@ import 'package:provider/provider.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   try {
@@ -86,7 +85,7 @@ class Application extends StatelessWidget {
                     theme: customThemeData(lightDynamic, Brightness.light),
                     darkTheme: customThemeData(darkDynamic, Brightness.dark),
                     themeMode: ThemeMode.system,
-                    home: const MainLayout())));
+                    home: const Layout())));
   }
 }
 

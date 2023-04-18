@@ -1,5 +1,4 @@
 import 'package:logger/logger.dart';
-import 'package:open_bookshelf/services/book_database_service.dart';
 import 'package:open_bookshelf/services/settings_service.dart';
 import 'package:open_bookshelf/widgets/description_card_widget.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
@@ -14,27 +13,28 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(t.navigation.settings)),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Export and Import the database
-                DescriptionCard(
-                  title: t.settings.export_import.title,
-                  subtitle: t.settings.export_import.subtitle,
-                  child: const _ExportImport(),
-                ),
-                DescriptionCard(
-                  title: t.settings.local_storage.title,
-                  subtitle: t.settings.local_storage.subtitle,
-                  child: const _LocalStorage(),
-                ),
-              ],
-            ),
+      appBar: AppBar(title: Text(t.navigation.settings)),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Export and Import the database
+              DescriptionCard(
+                title: t.settings.export_import.title,
+                subtitle: t.settings.export_import.subtitle,
+                child: const _ExportImport(),
+              ),
+              DescriptionCard(
+                title: t.settings.local_storage.title,
+                subtitle: t.settings.local_storage.subtitle,
+                child: const _LocalStorage(),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 
@@ -52,23 +52,25 @@ class _ExportImport extends StatelessWidget {
       // Show a failure snackbar
       GetIt.I.get<Logger>().e(error);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-        t.settings.export_import.export.failed,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onError,
+        content: Text(
+          t.settings.export_import.export.failed,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onError,
+          ),
         ),
-      )));
+      ));
     });
   }
 
   void import(BuildContext context) {
     // TODO: Implement
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Theme.of(context).colorScheme.error,
-        content: Text(
-          "Operation is not yet supported",
-          style: TextStyle(color: Theme.of(context).colorScheme.onError),
-        )));
+      backgroundColor: Theme.of(context).colorScheme.error,
+      content: Text(
+        "Operation is not yet supported",
+        style: TextStyle(color: Theme.of(context).colorScheme.onError),
+      ),
+    ));
   }
 
   @override
@@ -83,7 +85,7 @@ class _ExportImport extends StatelessWidget {
         ElevatedButton.icon(
             onPressed: () => import(context),
             icon: const Icon(Icons.file_open_rounded),
-            label: Text(t.settings.export_import.import.button))
+            label: Text(t.settings.export_import.import.button)),
       ],
     );
   }
