@@ -21,16 +21,18 @@ class _CollectionPickerWidgetState extends State<CollectionPickerWidget> {
   @override
   Widget build(BuildContext context) {
     selected ??= widget.initialValue;
+
     return SegmentedButton<BookCollection>(
       segments: BookCollection.values
           .map((e) => ButtonSegment<BookCollection>(
-              value: e,
-              icon: Icon(e.icon),
-              label: Text(
-                BookCollection.getLabel(e),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              )))
+                value: e,
+                icon: Icon(e.icon),
+                label: Text(
+                  BookCollection.getLabel(e),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ))
           .toList(),
       selected: {selected!},
       onSelectionChanged: (collection) {

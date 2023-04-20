@@ -26,14 +26,16 @@ class BookshelfScreen extends StatelessWidget {
               .filterBooksByCollection(filter)
               // wrap books into a BookPickWidget
               .map((e) => BookPickWidget(
-                  key: ObjectKey(e),
-                  book: e,
-                  onTap: (book) {
-                    // Set selected book as current book
-                    provider.currentlySelectedBook = book;
-                    // Dispatch book selection notification
-                    context.dispatchNotification(OnBookSelectionNotification());
-                  }))
+                    key: ObjectKey(e),
+                    book: e,
+                    onTap: (book) {
+                      // Set selected book as current book
+                      provider.currentlySelectedBook = book;
+                      // Dispatch book selection notification
+                      context
+                          .dispatchNotification(OnBookSelectionNotification());
+                    },
+                  ))
               .toList();
 
           // Create layout as a grid of books
@@ -51,45 +53,46 @@ class BookshelfScreen extends StatelessWidget {
                 ),
               ),
               Expanded(
-                  child: // Show Grid
-                      bookshelf.isEmpty
-                          ? Center(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Icon(Icons.new_releases_rounded,
-                                        size: 50.0,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onBackground
-                                            .withAlpha(200)),
+                child: // Show Grid
+                    bookshelf.isEmpty
+                        ? Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: Icon(
+                                    Icons.new_releases_rounded,
+                                    size: 50.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground
+                                        .withAlpha(200),
                                   ),
-                                  Text(
-                                    t.bookshelf.no_books,
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : LayoutBuilder(
-                              builder: (_, constraints) {
-                                return GridView.count(
-                                    crossAxisCount: constraints.maxWidth ~/
-                                        BookPickWidget.boxSize,
-                                    padding:
-                                        const EdgeInsets.all(2 * _gridSpacing),
-                                    childAspectRatio:
-                                        BookPickWidget.boxAspectRatio,
-                                    mainAxisSpacing: 2 * _gridSpacing,
-                                    crossAxisSpacing: _gridSpacing,
-                                    children: bookshelf);
-                              },
-                            ))
+                                ),
+                                Text(
+                                  t.bookshelf.no_books,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          )
+                        : LayoutBuilder(
+                            builder: (_, constraints) {
+                              return GridView.count(
+                                crossAxisCount: constraints.maxWidth ~/
+                                    BookPickWidget.boxSize,
+                                padding: const EdgeInsets.all(2 * _gridSpacing),
+                                childAspectRatio: BookPickWidget.boxAspectRatio,
+                                mainAxisSpacing: 2 * _gridSpacing,
+                                crossAxisSpacing: _gridSpacing,
+                                children: bookshelf,
+                              );
+                            },
+                          ),
+              ),
             ],
           );
         },

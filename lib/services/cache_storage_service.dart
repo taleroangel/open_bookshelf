@@ -8,22 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:open_bookshelf/exceptions/image_not_present_in_cache_exception.dart';
-import 'package:open_bookshelf/constants/endpoints.dart';
-
-/// Source from where the image will be retrieved
-enum StorageSource {
-  imageCache("/cache/image");
-
-  final String subDirectory;
-  const StorageSource(this.subDirectory);
-
-  static Future<String> getSourcePath(StorageSource storageSource) async {
-    switch (storageSource) {
-      case StorageSource.imageCache:
-        return "${(await getApplicationSupportDirectory()).path}${storageSource.subDirectory}";
-    }
-  }
-}
+import 'package:open_bookshelf/constants/open_library_endpoints.dart';
 
 /// Service for consulting internal device storage
 class CacheStorageService {
@@ -32,6 +17,7 @@ class CacheStorageService {
   /// Create a new async instance, first ensure path exists
   static Future<CacheStorageService> getInstance() async {
     await CacheStorageService._ensurePathsExists();
+
     return CacheStorageService._();
   }
 
@@ -56,6 +42,7 @@ class CacheStorageService {
 
     // Final futures
     final futures = await Future.wait(sizes);
+
     return futures.isEmpty
         ? 0
         : futures.reduce((value, element) => value + element) / (1024 * 1024);
@@ -70,6 +57,7 @@ class CacheStorageService {
     // Check if the directory exits
     if (!await source.exists()) {
       GetIt.I.get<Logger>().e("Requested path '${source.path}' didn't exist");
+
       return false;
     }
 
@@ -77,6 +65,7 @@ class CacheStorageService {
     await source.delete(recursive: true);
     GetIt.I.get<Logger>().w("Cache deleted, directory rebuild is required");
     await _ensurePathsExists();
+
     return true;
   }
 
@@ -84,7 +73,7 @@ class CacheStorageService {
   /// Must be called before [CacheStorageService] constructor
   static Future<void> _ensurePathsExists() async {
     // Store the futures
-    List<Future<dynamic>> futures = [];
+    List<Future<Object?>> futures = [];
 
     // Create a future for each Directory creation
     for (var element in StorageSource.values) {
@@ -99,19 +88,25 @@ class CacheStorageService {
 
   /// Fetch content from device internal storage
   Future<Uint8List> fetchContent(
-      StorageSource storageSource, String resource) async {
+    StorageSource storageSource,
+    String resource,
+  ) async {
     final path =
         "${await StorageSource.getSourcePath(storageSource)}/$resource";
     final file = File(path);
     if (!await file.exists()) {
       throw FailedToFetchContentException(resource: path);
     }
+
     return await file.readAsBytes();
   }
 
   /// Save content to internal storage
   Future<void> storeContent(
-      StorageSource storageSource, String resource, Uint8List data) async {
+    StorageSource storageSource,
+    String resource,
+    Uint8List data,
+  ) async {
     final path =
         "${await StorageSource.getSourcePath(storageSource)}/$resource";
     final file = File(path);
@@ -127,6 +122,7 @@ class CacheStorageService {
   /// Get the default book cover
   Future<Uint8List> _getDefaultCover() async {
     final bytes = await rootBundle.load('assets/images/missing_cover.jpg');
+
     return bytes.buffer.asUint8List();
   }
 
@@ -139,6 +135,7 @@ class CacheStorageService {
     if (response.statusCode != HttpStatus.ok) {
       throw FailedToFetchContentException(resource: uri.toString());
     }
+
     return response.bodyBytes;
   }
 
@@ -164,6 +161,7 @@ class CacheStorageService {
     try {
       GetIt.I.get<Logger>().d("Cover: Fetching cover from cache...");
       // If image is not present in cache download it
+
       return await _fetchCoverFromCache(coverId);
     } on ImageNotPresentInCacheException {
       // Try and download image
@@ -186,6 +184,7 @@ class CacheStorageService {
       } on FailedToFetchContentException {
         GetIt.I.get<Logger>().e("Cover: Failed to fetch from internet");
         // Return the default cover
+
         return await _getDefaultCover();
 
         // This exceptions is returned when image already existed on cache
@@ -193,8 +192,24 @@ class CacheStorageService {
       } on ResourceAlreadyExistsException {
         GetIt.I.get<Logger>().e("Cache: ImageCache internal error");
         throw Exception(
-            "ImageCache failed to fetch contents from internal storage");
+          "ImageCache failed to fetch contents from internal storage",
+        );
       }
+    }
+  }
+}
+
+/// Source from where the image will be retrieved
+enum StorageSource {
+  imageCache("/cache/image");
+
+  final String subDirectory;
+  const StorageSource(this.subDirectory);
+
+  static Future<String> getSourcePath(StorageSource storageSource) async {
+    switch (storageSource) {
+      case StorageSource.imageCache:
+        return "${(await getApplicationSupportDirectory()).path}${storageSource.subDirectory}";
     }
   }
 }

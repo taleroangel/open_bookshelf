@@ -13,13 +13,14 @@ class CoverScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
         ),
         body: Hero(
-            tag: "cover:zoom",
-            child: Center(
-              child: InteractiveViewer(
-                constrained: true,
-                clipBehavior: Clip.none,
-                child: child,
-              ),
-            )),
+          tag: "cover:zoom",
+          child: Center(
+            child: InteractiveViewer(
+              constrained: true,
+              clipBehavior: Clip.none,
+              child: child,
+            ),
+          ),
+        ),
       );
 }

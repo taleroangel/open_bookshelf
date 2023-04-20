@@ -6,9 +6,6 @@ import 'package:open_bookshelf/services/book_database_service.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/models/tag.dart';
 
-/// Notification class for when a book is selected
-class OnBookSelectionNotification extends Notification {}
-
 class BookshelfProvider extends ChangeNotifier {
   BookshelfProvider() {
     // Change to the database also prompts changes to the listeners
@@ -40,6 +37,7 @@ class BookshelfProvider extends ChangeNotifier {
     if (_currentlySelectedBook == null) return false;
     await _databaseService.database.delete(_currentlySelectedBook!.isbn);
     currentlySelectedBook = null;
+
     return true;
   }
 
@@ -53,8 +51,10 @@ class BookshelfProvider extends ChangeNotifier {
         .put(_currentlySelectedBook!.isbn, _currentlySelectedBook!);
     // Notify Listeners
     notifyListeners();
+
     GetIt.I.get<Logger>().i(
-        "$runtimeType: Updated book with ISBN: ${_currentlySelectedBook?.isbn}");
+          "$runtimeType: Updated book with ISBN: ${_currentlySelectedBook?.isbn}",
+        );
   }
 
   /// Add or Remove a tag from the currently selected book
@@ -64,9 +64,13 @@ class BookshelfProvider extends ChangeNotifier {
         .put(_currentlySelectedBook!.isbn, _currentlySelectedBook!);
     notifyListeners();
     GetIt.I.get<Logger>().i(
-        "$runtimeType: Updated book with ISBN: ${_currentlySelectedBook?.isbn}");
+          "$runtimeType: Updated book with ISBN: ${_currentlySelectedBook?.isbn}",
+        );
   }
 
   List<Book> booksWithTag(Tag tag) =>
       bookshelf.values.where((element) => element.tags.contains(tag)).toList();
 }
+
+/// Notification class for when a book is selected
+class OnBookSelectionNotification extends Notification {}

@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/tag.dart';
@@ -8,11 +7,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class TagPickerWidget extends StatelessWidget {
-  const TagPickerWidget(
-      {required this.onSelect,
-      required this.book,
-      super.key,
-      this.showCreateTag = true});
+  const TagPickerWidget({
+    required this.onSelect,
+    required this.book,
+    super.key,
+    this.showCreateTag = true,
+  });
 
   final void Function(Tag selected) onSelect;
   final Book book;
@@ -29,7 +29,8 @@ class TagPickerWidget extends StatelessWidget {
         onPressed: () => onSelect(e),
         label: Text(e.name),
         avatar: Container(
-            decoration: BoxDecoration(shape: BoxShape.circle, color: e.color)),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: e.color),
+        ),
       );
     }).toList();
 
@@ -52,7 +53,8 @@ class TagPickerWidget extends StatelessWidget {
               onSelect(tag);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(t.labels.already_exists)));
+                SnackBar(content: Text(t.labels.already_exists)),
+              );
             }
           }
         }),
@@ -113,43 +115,48 @@ class _CreateTag extends StatelessWidget {
                   ),
                   const SizedBox.square(dimension: 8.0),
                   ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(t.labels.select_color),
-                            actions: [
-                              ElevatedButton(
-                                  onPressed: Navigator.of(context).pop,
-                                  child: Text(t.general.button.ok))
-                            ],
-                            content: SingleChildScrollView(
-                                child: ColorPicker(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(t.labels.select_color),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: Navigator.of(context).pop,
+                              child: Text(t.general.button.ok),
+                            ),
+                          ],
+                          content: SingleChildScrollView(
+                            child: ColorPicker(
                               pickerColor: color,
                               onColorChanged: (value) {
                                 setState(() {
                                   color = value;
                                 });
                               },
-                            )),
+                            ),
                           ),
-                        );
-                      },
-                      child: Text(t.labels.select_color)),
+                        ),
+                      );
+                    },
+                    child: Text(t.labels.select_color),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
       actions: [
         TextButton(
-            onPressed: Navigator.of(context).pop,
-            child: Text(t.general.button.cancel)),
+          onPressed: Navigator.of(context).pop,
+          child: Text(t.general.button.cancel),
+        ),
         ElevatedButton(
-            onPressed: () => Navigator.of(context)
-                .pop(<String, dynamic>{"label": label, "color": color}),
-            child: Text(t.general.button.ok))
+          onPressed: () => Navigator.of(context)
+              .pop(<String, dynamic>{"label": label, "color": color}),
+          child: Text(t.general.button.ok),
+        ),
       ],
     );
   }

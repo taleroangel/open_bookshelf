@@ -20,12 +20,12 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             children: [
               // Export and Import the database
-              DescriptionCard(
+              DescriptionCardWidget(
                 title: t.settings.export_import.title,
                 subtitle: t.settings.export_import.subtitle,
                 child: const _ExportImport(),
               ),
-              DescriptionCard(
+              DescriptionCardWidget(
                 title: t.settings.local_storage.title,
                 subtitle: t.settings.local_storage.subtitle,
                 child: const _LocalStorage(),
@@ -46,8 +46,8 @@ class _ExportImport extends StatelessWidget {
     GetIt.I.get<SettingsService>().export().then((file) {
       // Show a success Snackbar
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content:
-              Text(t.settings.export_import.export.success(path: file.path))));
+        content: Text(t.settings.export_import.export.success(path: file.path)),
+      ));
     }).catchError((error) {
       // Show a failure snackbar
       GetIt.I.get<Logger>().e(error);
@@ -79,13 +79,15 @@ class _ExportImport extends StatelessWidget {
       spacing: 4.0,
       children: [
         ElevatedButton.icon(
-            onPressed: () => export(context),
-            icon: const Icon(Icons.upload_file_rounded),
-            label: Text(t.settings.export_import.export.button)),
+          onPressed: () => export(context),
+          icon: const Icon(Icons.upload_file_rounded),
+          label: Text(t.settings.export_import.export.button),
+        ),
         ElevatedButton.icon(
-            onPressed: () => import(context),
-            icon: const Icon(Icons.file_open_rounded),
-            label: Text(t.settings.export_import.import.button)),
+          onPressed: () => import(context),
+          icon: const Icon(Icons.file_open_rounded),
+          label: Text(t.settings.export_import.import.button),
+        ),
       ],
     );
   }
@@ -116,14 +118,16 @@ class _LocalStorageState extends State<_LocalStorage> {
         content: Text(t.settings.local_storage.delete_cache.confirm),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.general.button.cancel)),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(t.general.button.cancel),
+          ),
           TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(
-                t.general.button.delete,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              )),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              t.general.button.delete,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
         ],
       ),
     );
@@ -136,15 +140,16 @@ class _LocalStorageState extends State<_LocalStorage> {
           .deleteCache(StorageSource.imageCache);
       // Show snackbar
       scaffoldMessenger.showSnackBar(SnackBar(
-          content: Text(cacheWasDeleted
-              ? t.settings.local_storage.delete_cache.success
-              : t.settings.local_storage.delete_cache.failed)));
+        content: Text(cacheWasDeleted
+            ? t.settings.local_storage.delete_cache.success
+            : t.settings.local_storage.delete_cache.failed),
+      ));
     }
 
     setState(() => (clearingCache = false)); // Set state to compaction
   }
 
-  void compactDatabase() async {
+  void compactDatabase() {
     // Set state to compaction
     setState(() => (compactingDatabase = true));
 
@@ -152,10 +157,12 @@ class _LocalStorageState extends State<_LocalStorage> {
     GetIt.I.get<SettingsService>().databaseCompactation().then((_) {
       // Show success
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(t.settings.local_storage.compact_database.success)));
+        content: Text(t.settings.local_storage.compact_database.success),
+      ));
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(t.settings.local_storage.compact_database.failed)));
+        content: Text(t.settings.local_storage.compact_database.failed),
+      ));
     });
 
     // Set state to compactation
@@ -172,14 +179,16 @@ class _LocalStorageState extends State<_LocalStorage> {
         content: Text(t.settings.local_storage.delete_database.confirm),
         actions: [
           TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.general.button.cancel)),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(t.general.button.cancel),
+          ),
           TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(
-                t.general.button.delete,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              )),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              t.general.button.delete,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
         ],
       ),
     );
@@ -200,22 +209,27 @@ class _LocalStorageState extends State<_LocalStorage> {
       children: [
         // Ammount of books stored
         Text(t.settings.local_storage.books_stored(
-            books: GetIt.I.get<SettingsService>().databaseController.length)),
+          books: GetIt.I.get<SettingsService>().databaseController.length,
+        )),
         // Size of the database
         FutureBuilder(
-            future:
-                GetIt.I.get<SettingsService>().databaseController.databaseSize,
-            builder: (context, snapshot) => Text(t.settings.local_storage
-                .bookshelf_size(
-                    size: snapshot.data?.toStringAsFixed(2) ?? "..."))),
+          future:
+              GetIt.I.get<SettingsService>().databaseController.databaseSize,
+          builder: (context, snapshot) =>
+              Text(t.settings.local_storage.bookshelf_size(
+            size: snapshot.data?.toStringAsFixed(2) ?? "...",
+          )),
+        ),
         // Size of the cache
         FutureBuilder(
-            future: GetIt.I
-                .get<CacheStorageService>()
-                .getCacheSize(StorageSource.imageCache),
-            builder: (context, snapshot) => Text(t.settings.local_storage
-                .cover_cache_size(
-                    size: snapshot.data?.toStringAsFixed(2) ?? "..."))),
+          future: GetIt.I
+              .get<CacheStorageService>()
+              .getCacheSize(StorageSource.imageCache),
+          builder: (context, snapshot) =>
+              Text(t.settings.local_storage.cover_cache_size(
+            size: snapshot.data?.toStringAsFixed(2) ?? "...",
+          )),
+        ),
 
         const SizedBox(
           height: 8.0,
@@ -226,57 +240,63 @@ class _LocalStorageState extends State<_LocalStorage> {
           children: [
             // Delete cache button
             TextButton(
-                onPressed: clearCache,
-                child: Row(
-                  children: [
-                    if (clearingCache)
-                      const Padding(
-                        padding: EdgeInsets.only(right: 16.0),
-                        child: SizedBox.square(
-                            dimension: 16.0,
-                            child: CircularProgressIndicator()),
+              onPressed: () => clearCache,
+              child: Row(
+                children: [
+                  if (clearingCache)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: SizedBox.square(
+                        dimension: 16.0,
+                        child: CircularProgressIndicator(),
                       ),
-                    Text(t.settings.local_storage.delete_cache.button),
-                  ],
-                )),
+                    ),
+                  Text(t.settings.local_storage.delete_cache.button),
+                ],
+              ),
+            ),
 
             // Compact database button
             TextButton(
-                onPressed: compactDatabase,
-                child: Row(
-                  children: [
-                    if (compactingDatabase)
-                      const Padding(
-                        padding: EdgeInsets.only(right: 16.0),
-                        child: SizedBox.square(
-                            dimension: 16.0,
-                            child: CircularProgressIndicator()),
+              onPressed: compactDatabase,
+              child: Row(
+                children: [
+                  if (compactingDatabase)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: SizedBox.square(
+                        dimension: 16.0,
+                        child: CircularProgressIndicator(),
                       ),
-                    Text(t.settings.local_storage.compact_database.button),
-                  ],
-                )),
+                    ),
+                  Text(t.settings.local_storage.compact_database.button),
+                ],
+              ),
+            ),
 
             // Button to delete the database
             TextButton(
-                onPressed: deleteDatabase,
-                child: Row(
-                  children: [
-                    if (deletingDatabase)
-                      const Padding(
-                        padding: EdgeInsets.only(right: 16.0),
-                        child: SizedBox.square(
-                            dimension: 16.0,
-                            child: CircularProgressIndicator()),
+              onPressed: deleteDatabase,
+              child: Row(
+                children: [
+                  if (deletingDatabase)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: SizedBox.square(
+                        dimension: 16.0,
+                        child: CircularProgressIndicator(),
                       ),
-                    Text(
-                      t.settings.local_storage.delete_database.button,
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.error),
                     ),
-                  ],
-                )),
+                  Text(
+                    t.settings.local_storage.delete_database.button,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+                ],
+              ),
+            ),
           ],
-        )
+        ),
       ],
     );
   }

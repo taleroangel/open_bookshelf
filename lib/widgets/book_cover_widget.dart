@@ -13,8 +13,8 @@ class BookCoverWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<BookshelfProvider>();
-    return FutureBuilder(
+    return Consumer<BookshelfProvider>(
+      builder: (context, provider, child) => FutureBuilder(
         future: (useThisBookInstead ?? provider.currentlySelectedBook)?.image,
         builder: (context, snapshot) {
           // If connectoin was successfull, then store image in internal cache
@@ -35,24 +35,29 @@ class BookCoverWidget extends StatelessWidget {
                 tag: "cover:zoom",
                 child: GestureDetector(
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => CoverScreen(child: image))),
+                    builder: (_) => CoverScreen(child: image),
+                  )),
                   child: image,
                 ),
               );
             }
           }
+
           return Hero(
-              tag: "cover:zoom",
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(t.covers.fetching),
-                  )
-                ],
-              ));
-        });
+            tag: "cover:zoom",
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircularProgressIndicator(),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(t.covers.fetching),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }

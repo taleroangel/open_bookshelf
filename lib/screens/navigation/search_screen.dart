@@ -10,11 +10,12 @@ class SearchScreen extends StatelessWidget {
       appBar: AppBar(title: Text(t.navigation.search)),
       body: Center(
         child: Placeholder(
-            color: Theme.of(context).colorScheme.primary,
-            child: const Icon(
-              Icons.help,
-              size: 100.0,
-            )),
+          color: Theme.of(context).colorScheme.primary,
+          child: const Icon(
+            Icons.help,
+            size: 100.0,
+          ),
+        ),
       ),
     );
   }

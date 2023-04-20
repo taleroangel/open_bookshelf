@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Material [Card] with a [Text] title and subtitle
-class DescriptionCard extends StatelessWidget {
-  const DescriptionCard({
+class DescriptionCardWidget extends StatelessWidget {
+  const DescriptionCardWidget({
     required this.title,
     required this.subtitle,
     this.child,
@@ -26,26 +26,27 @@ class DescriptionCard extends StatelessWidget {
     return Card(
       margin: margin,
       child: Padding(
-          padding: padding,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: crossAxisAlignment,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              Divider(
-                height: dividerHeight,
-              ),
-              if (child != null) child!
-            ],
-          )),
+        padding: padding,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: crossAxisAlignment,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Divider(
+              height: dividerHeight,
+            ),
+            if (child != null) child!,
+          ],
+        ),
+      ),
     );
   }
 }

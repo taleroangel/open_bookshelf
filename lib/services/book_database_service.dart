@@ -20,13 +20,16 @@ class BookDatabaseService with IJsonManipulator implements IDatabaseController {
   /// Create a new database service instance async
   static Future<BookDatabaseService> getInstance() async {
     Hive.registerAdapter(BookTypeAdapter());
+
     return BookDatabaseService._(
-        await Hive.openBox<Book>(localDatabaseBoxName));
+      await Hive.openBox<Book>(localDatabaseBoxName),
+    );
   }
 
   @override
   Future<double> get databaseSize async {
     final supportDirectory = await getApplicationSupportDirectory();
+
     return (await File("${supportDirectory.path}/$localDatabaseBoxName.hive")
             .length()) /
         1024;
@@ -53,7 +56,7 @@ class BookDatabaseService with IJsonManipulator implements IDatabaseController {
 
   @override
   Future<DataRepresentationType> export<DataRepresentationType>() async {
-    if (DataRepresentationType is JsonDocument) {
+    if (DataRepresentationType.runtimeType == JsonDocument) {
       return toJson() as DataRepresentationType;
     } else {
       throw UnimplementedError();
@@ -62,8 +65,9 @@ class BookDatabaseService with IJsonManipulator implements IDatabaseController {
 
   @override
   Future<void> import<DataRepresentationType>(
-      DataRepresentationType data) async {
-    if (DataRepresentationType is JsonDocument) {
+    DataRepresentationType data,
+  ) async {
+    if (DataRepresentationType.runtimeType == JsonDocument) {
       await fromJson(data as JsonDocument);
     } else {
       throw UnimplementedError();

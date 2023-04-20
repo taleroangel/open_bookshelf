@@ -17,7 +17,7 @@ class AddBookScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final layout = [
       // ISBN insert
-      DescriptionCard(
+      DescriptionCardWidget(
         dividerHeight: 32.0,
         margin: const EdgeInsets.all(8.0),
         padding: const EdgeInsets.all(32.0),
@@ -28,7 +28,7 @@ class AddBookScreen extends StatelessWidget {
       ),
 
       // Manually insert
-      DescriptionCard(
+      DescriptionCardWidget(
         dividerHeight: 32.0,
         margin: const EdgeInsets.all(8.0),
         padding: const EdgeInsets.all(32.0),

@@ -1,3 +1,6 @@
+// Flutter
+// ignore_for_file: prefer-match-file-name
+
 import 'package:hive/hive.dart';
 
 abstract class IDatabaseController {

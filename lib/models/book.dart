@@ -38,11 +38,7 @@ class Book with _$Book {
   int get hashCode => isbn.hashCode;
 
   void addOrRemoveTag(Tag tag) {
-    if (tags.contains(tag)) {
-      tags = {...tags}..remove(tag);
-    } else {
-      tags = {...tags, tag};
-    }
+    tags = tags.contains(tag) ? ({...tags}..remove(tag)) : {...tags, tag};
   }
 }
 
@@ -70,6 +66,7 @@ enum BookCollection {
 
   static BookCollection random() {
     final rand = Random().nextInt(BookCollection.values.length);
+
     return BookCollection.values[rand];
   }
 }
@@ -77,6 +74,7 @@ enum BookCollection {
 extension BookExtension on Iterable<Book> {
   Iterable<Book> filterBooksByCollection(BookCollection collection) {
     if (collection == BookCollection.none) return this;
+
     return where((element) => element.collection == collection);
   }
 }

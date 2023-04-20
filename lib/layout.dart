@@ -26,7 +26,7 @@ class Layout extends StatefulWidget {
     BookshelfScreen(),
     LabelsScreen(),
     SearchScreen(),
-    SettingsScreen()
+    SettingsScreen(),
   ];
 
   @override
@@ -46,6 +46,7 @@ class _LayoutState extends State<Layout> {
   @override
   Widget build(BuildContext context) {
     final sideviewProvider = context.read<SideviewProvider>();
+
     return AdaptiveScaffold(
       // Depending on screen size 'largeSecondaryBody' will either
       // build or dispose the provided widget, SideviewWidget alters state
@@ -66,6 +67,7 @@ class _LayoutState extends State<Layout> {
               builder: (context) => const BookScreen(),
             ));
           }
+
           return true;
         },
         child: Scaffold(
@@ -74,9 +76,10 @@ class _LayoutState extends State<Layout> {
                   is BookshelfScreen
               ? FloatingActionButton(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const AddBookScreen(),
-                      )),
-                  child: const Icon(Icons.add))
+                    builder: (_) => const AddBookScreen(),
+                  )),
+                  child: const Icon(Icons.add),
+                )
               : null,
           // Show a page view with the routes
           body: PageView(
@@ -100,18 +103,29 @@ class _LayoutState extends State<Layout> {
         // Change the index
         currentPageIndex = selectedIndex;
         // Animate transition to page
-        _pageController.animateToPage(currentPageIndex,
-            duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+        _pageController.animateToPage(
+          currentPageIndex,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
       }),
       destinations: [
         NavigationDestination(
-            icon: const Icon(Icons.shelves), label: t.navigation.bookshelf),
+          icon: const Icon(Icons.shelves),
+          label: t.navigation.bookshelf,
+        ),
         NavigationDestination(
-            icon: const Icon(Icons.label), label: t.navigation.labels),
+          icon: const Icon(Icons.label),
+          label: t.navigation.labels,
+        ),
         NavigationDestination(
-            icon: const Icon(Icons.search), label: t.navigation.search),
+          icon: const Icon(Icons.search),
+          label: t.navigation.search,
+        ),
         NavigationDestination(
-            icon: const Icon(Icons.settings), label: t.navigation.settings),
+          icon: const Icon(Icons.settings),
+          label: t.navigation.settings,
+        ),
       ],
     );
   }

@@ -6,9 +6,10 @@ part 'tag.g.dart';
 
 @Freezed()
 class Tag with _$Tag {
-  const factory Tag(
-      {required String name,
-      @ColorJsonConverter() required Color color}) = _Tag;
+  const factory Tag({
+    required String name,
+    @ColorJsonConverter() required Color color,
+  }) = _Tag;
 
   factory Tag.fromJson(Map<String, Object?> json) => _$TagFromJson(json);
 

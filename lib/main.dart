@@ -1,4 +1,6 @@
 // Flutter
+// ignore_for_file: prefer-match-file-name
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,8 +41,9 @@ void main() async {
 
     // Logger
     GetIt.I.registerSingleton(Logger(
-        printer: PrettyPrinter(),
-        level: kDebugMode ? Level.debug : Level.warning));
+      printer: PrettyPrinter(),
+      level: kDebugMode ? Level.debug : Level.warning,
+    ));
 
     // Register all services and dependencies
     GetIt.I.registerSingleton(OpenlibraryService());
@@ -50,7 +53,8 @@ void main() async {
     // Services that depend on other services
     await GetIt.I.isReady<BookDatabaseService>();
     GetIt.I.registerSingleton(SettingsService(
-        databaseController: GetIt.I.get<BookDatabaseService>()));
+      databaseController: GetIt.I.get<BookDatabaseService>(),
+    ));
 
     // Get all dependencies ready
     await GetIt.I.allReady();
@@ -70,23 +74,23 @@ class Application extends StatelessWidget {
   const Application({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return DynamicColorBuilder(
+  Widget build(BuildContext context) => DynamicColorBuilder(
         builder: (lightDynamic, darkDynamic) => MultiProvider(
-                providers: [
-                  ChangeNotifierProvider(create: (_) => SideviewProvider()),
-                  ChangeNotifierProvider(create: (_) => BookshelfProvider())
-                ],
-                builder: (context, child) => MaterialApp(
-                    locale: TranslationProvider.of(context).flutterLocale,
-                    supportedLocales: AppLocaleUtils.supportedLocales,
-                    localizationsDelegates:
-                        GlobalMaterialLocalizations.delegates,
-                    theme: customThemeData(lightDynamic, Brightness.light),
-                    darkTheme: customThemeData(darkDynamic, Brightness.dark),
-                    themeMode: ThemeMode.system,
-                    home: const Layout())));
-  }
+          providers: [
+            ChangeNotifierProvider(create: (_) => SideviewProvider()),
+            ChangeNotifierProvider(create: (_) => BookshelfProvider()),
+          ],
+          builder: (context, child) => MaterialApp(
+            locale: TranslationProvider.of(context).flutterLocale,
+            supportedLocales: AppLocaleUtils.supportedLocales,
+            localizationsDelegates: GlobalMaterialLocalizations.delegates,
+            theme: customThemeData(lightDynamic, Brightness.light),
+            darkTheme: customThemeData(darkDynamic, Brightness.dark),
+            themeMode: ThemeMode.system,
+            home: const Layout(),
+          ),
+        ),
+      );
 }
 
 class FailedApplication extends StatelessWidget {
@@ -112,7 +116,7 @@ class FailedApplication extends StatelessWidget {
             Text(
               exception.toString(),
               textAlign: TextAlign.center,
-            )
+            ),
           ],
         ),
       ),

@@ -7,28 +7,26 @@ class ExceptionWidget extends StatelessWidget {
   final Exception? exception;
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.onError,
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          children: [
-            Text(
-              t.general.misc.exception,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            Text(exception.runtimeType.toString()),
-            const SizedBox(
-              height: 16.0,
-            ),
-            Text(
-              exception.toString(),
-              style: Theme.of(context).textTheme.bodyLarge,
-            )
-          ],
+  Widget build(BuildContext context) => Card(
+        color: Theme.of(context).colorScheme.onError,
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            children: [
+              Text(
+                t.general.misc.exception,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              Text(exception.runtimeType.toString()),
+              const SizedBox(
+                height: 16.0,
+              ),
+              Text(
+                exception.toString(),
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

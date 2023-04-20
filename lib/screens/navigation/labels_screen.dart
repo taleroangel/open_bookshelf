@@ -21,12 +21,14 @@ class LabelsScreen extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: Icon(Icons.label_off,
-                        size: 50.0,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onBackground
-                            .withAlpha(200)),
+                    child: Icon(
+                      Icons.label_off,
+                      size: 50.0,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withAlpha(200),
+                    ),
                   ),
                   Text(
                     t.labels.no_tags,
@@ -39,9 +41,10 @@ class LabelsScreen extends StatelessWidget {
           : ListView.builder(
               itemCount: bookshelfProvider.tags.length,
               itemBuilder: (context, index) => TagItemWidget(
-                  key: ObjectKey(bookshelfProvider.tags.elementAt(index)),
-                  initExpanded: index == 0,
-                  tag: bookshelfProvider.tags.elementAt(index)),
+                key: ObjectKey(bookshelfProvider.tags.elementAt(index)),
+                initExpanded: index == 0,
+                tag: bookshelfProvider.tags.elementAt(index),
+              ),
             ),
     );
   }

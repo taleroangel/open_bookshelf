@@ -1,4 +1,6 @@
 class OpenLibraryEndpoints {
+  static get contribute => "https://openlibrary.org/help/faq/editing";
+
   OpenLibraryEndpoints._();
 
   static String isbnEndpoint(String isbn) =>
@@ -6,6 +8,4 @@ class OpenLibraryEndpoints {
 
   static String coverEndpoint(String id) =>
       "https://covers.openlibrary.org/b/id/$id-L.jpg?default=false";
-
-  static const contribute = "https://openlibrary.org/help/faq/editing";
 }

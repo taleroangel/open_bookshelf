@@ -27,7 +27,7 @@ class TextWithIconWidget extends StatelessWidget {
             overflow: TextOverflow.fade,
             softWrap: false,
           ),
-        )
+        ),
       ],
     );
   }
