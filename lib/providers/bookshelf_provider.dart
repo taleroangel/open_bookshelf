@@ -10,7 +10,7 @@ class BookshelfProvider extends ChangeNotifier {
   BookshelfProvider() {
     // Change to the database also prompts changes to the listeners
     _tags = _databaseService.fetchTags();
-    _databaseService.database.listenable().addListener(() {
+    _databaseService.stream.listen((event) {
       _tags = _databaseService.fetchTags();
       notifyListeners();
     });
@@ -33,8 +33,10 @@ class BookshelfProvider extends ChangeNotifier {
       GetIt.I.get<BookDatabaseService>();
   Box<Book> get bookshelf => _databaseService.database;
 
+  /// Delete the currently selected book
   Future<bool> deleteCurrentBook() async {
     if (_currentlySelectedBook == null) return false;
+
     await _databaseService.database.delete(_currentlySelectedBook!.isbn);
     currentlySelectedBook = null;
 

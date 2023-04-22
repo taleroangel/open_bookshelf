@@ -49,8 +49,9 @@ class _ExportImport extends StatelessWidget {
         content: Text(t.settings.export_import.export.success(path: file.path)),
       ));
     }).catchError((error) {
-      // Show a failure snackbar
+      // Show error message
       GetIt.I.get<Logger>().e(error);
+      // Show a failure snackbar
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
           t.settings.export_import.export.failed,
@@ -63,14 +64,26 @@ class _ExportImport extends StatelessWidget {
   }
 
   void import(BuildContext context) {
-    // TODO: Implement
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: Theme.of(context).colorScheme.error,
-      content: Text(
-        "Operation is not yet supported",
-        style: TextStyle(color: Theme.of(context).colorScheme.onError),
-      ),
-    ));
+    GetIt.I.get<SettingsService>().import().then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        content: Text(
+          t.settings.export_import.import.success,
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        ),
+      ));
+    }).catchError((e) {
+      // Show error
+      GetIt.I.get<Logger>().e(e);
+      // Show error snackbar
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.error,
+        content: Text(
+          t.settings.export_import.import.failed,
+          style: TextStyle(color: Theme.of(context).colorScheme.onError),
+        ),
+      ));
+    });
   }
 
   @override
@@ -208,9 +221,15 @@ class _LocalStorageState extends State<_LocalStorage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Ammount of books stored
-        Text(t.settings.local_storage.books_stored(
-          books: GetIt.I.get<SettingsService>().databaseController.length,
-        )),
+        FutureBuilder(
+          future: GetIt.I.get<SettingsService>().databaseController.length,
+          builder: (context, snapshot) =>
+              Text(t.settings.local_storage.books_stored(
+            books: snapshot.connectionState == ConnectionState.done
+                ? snapshot.data!
+                : "...",
+          )),
+        ),
         // Size of the database
         FutureBuilder(
           future:

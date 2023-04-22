@@ -29,8 +29,8 @@
 		"import": {
 			"button": "Import",
 			"export": "Export",
-			"failed": "Failed to import the database",
-			"success": "Database import failed"
+			"failed": "Failed to import data",
+			"success": "Database import success"
 		},
 		"export": {
 			"button": "Export",

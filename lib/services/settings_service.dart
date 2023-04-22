@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:open_bookshelf/exceptions/database_exception.dart';
 import 'package:open_bookshelf/interfaces/database_controller.dart';
 import 'package:open_bookshelf/interfaces/json_manipulator.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,7 +23,7 @@ class SettingsService {
     }
 
     // Get the database as a JSON
-    final databaseJson = databaseController.export<JsonDocument>();
+    final databaseJson = await databaseController.export<JsonDocument>();
 
     // Parse filename
     final timestamp = DateTime.now().toUtc().toString().split(' ')[0];
@@ -34,6 +36,27 @@ class SettingsService {
 
     // Return the filename
     return file;
+  }
+
+  Future<void> import() async {
+    // File picker
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowedExtensions: const ['.json'],
+    );
+
+    // Any file selected
+    if (result == null) {
+      throw const DatabaseException(message: "Failed to select file");
+    }
+
+    // Selected file
+    final file = File(result.files.single.path!);
+
+    // Read file contents in JSON format
+    final content = jsonDecode(await file.readAsString()) as JsonDocument;
+
+    // Database import
+    databaseController.import(content);
   }
 
   Future<void> databaseCompactation() async {
