@@ -37,5 +37,15 @@
 			"failed": "Failed to export the database",
 			"success": "Successfully exported file to: $path"
 		}
+	},
+	"about": {
+		"title": "About",
+		"subtitle": "Credits and Software licence",
+		"credits": "OpenBookshelf by Angel Talero © 2023",
+		"license": "Open Source software (MIT license)",
+		"flutter": "Powered by {} Flutter",
+		"openlibrary": "Thanks to OpenLibrary for providing the API",
+		"github": "Contribute on GitHub",
+		"dialog": "Software Licenses"
 	}
 }

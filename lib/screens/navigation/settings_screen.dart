@@ -5,6 +5,7 @@ import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/services/cache_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Show app settings
 class SettingsScreen extends StatelessWidget {
@@ -30,10 +31,76 @@ class SettingsScreen extends StatelessWidget {
                 subtitle: t.settings.local_storage.subtitle,
                 child: const _LocalStorage(),
               ),
+              DescriptionCardWidget(
+                title: t.settings.about.title,
+                subtitle: t.settings.about.subtitle,
+                child: const _About(),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _About extends StatelessWidget {
+  const _About();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(t.settings.about.credits),
+        Text(t.settings.about.license),
+        const Divider(),
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: t.settings.about.flutter.split("{}").first,
+              ),
+              const WidgetSpan(
+                child: FlutterLogo(
+                  size: 16.0,
+                ),
+              ),
+              TextSpan(
+                text: t.settings.about.flutter.split("{}").last,
+              ),
+            ],
+          ),
+        ),
+        Text(t.settings.about.openlibrary),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.people_alt_rounded),
+            label: Text(t.settings.about.github),
+            onPressed: () => launchUrl(
+              Uri.parse(
+                "https://github.com/taleroangel/open_bookshelf",
+              ),
+              mode: LaunchMode.externalApplication,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.privacy_tip_rounded),
+            label: Text(t.settings.about.dialog),
+            onPressed: () => showAboutDialog(
+              context: context,
+              applicationName: t.app.name,
+              applicationLegalese: t.app.legalese,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
