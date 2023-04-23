@@ -202,7 +202,6 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
     /// Text controller logic
     _controller.addListener(() {
       setState(() {
-        isValidISBN = false;
         isbn = _controller.text;
       });
       _formKey.currentState?.validate();
@@ -279,6 +278,7 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
                   ))
                       .then((value) {
                     _controller.text = value;
+                    _formKey.currentState?.validate();
                   });
                 },
               ),

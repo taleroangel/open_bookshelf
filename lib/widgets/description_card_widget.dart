@@ -9,7 +9,7 @@ class DescriptionCardWidget extends StatelessWidget {
     this.dividerHeight,
     this.crossAxisAlignment = CrossAxisAlignment.start,
     this.padding = const EdgeInsets.all(16.0),
-    this.margin,
+    this.margin = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
     super.key,
   });
 

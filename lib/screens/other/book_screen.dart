@@ -73,34 +73,42 @@ class BookScreen extends StatelessWidget {
 
                       // Show Cover
                       Expanded(
+                        flex: 6,
                         child: BookCoverWidget(
                           useThisBookInstead: useThisBookInstead,
                         ),
                       ),
 
-                      // Show title
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(children: [
-                            TextSpan(
-                              text: book.title,
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            // Show title
+                            Text(
+                              book.title,
                               style: Theme.of(context).textTheme.titleLarge,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
                             ),
+
                             if (book.subtitle != null)
-                              TextSpan(
-                                text: "\n${book.subtitle}",
+                              Text(
+                                "\n${book.subtitle}",
                                 style: Theme.of(context).textTheme.titleMedium,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
                               ),
+
                             if (book.url == null)
-                              TextSpan(
-                                text: "\n${t.book.not_in_openlibrary}",
+                              Text(
+                                "\n${t.book.not_in_openlibrary}",
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
-                          ]),
+                          ],
                         ),
                       ),
 
@@ -150,23 +158,24 @@ class BookScreen extends StatelessWidget {
                         ),
 
                       // Tag picker
-                      SizedBox(
-                        height: 80.0,
-                        child: StatefulBuilder(
-                          builder: (context, setState) => TagPickerWidget(
-                            showCreateTag: useThisBookInstead == null,
-                            book: book,
-                            onSelect: (tag) {
-                              if (useThisBookInstead == null) {
-                                bookshelfProvider.addOrRemoveBookTag(tag);
-                              } else {
-                                setState(() =>
-                                    useThisBookInstead!.addOrRemoveTag(tag));
-                              }
-                            },
+                      if (bookshelfProvider.tags.isNotEmpty)
+                        SizedBox(
+                          height: 80.0,
+                          child: StatefulBuilder(
+                            builder: (context, setState) => TagPickerWidget(
+                              showCreateTag: useThisBookInstead == null,
+                              book: book,
+                              onSelect: (tag) {
+                                if (useThisBookInstead == null) {
+                                  bookshelfProvider.addOrRemoveBookTag(tag);
+                                } else {
+                                  setState(() =>
+                                      useThisBookInstead!.addOrRemoveTag(tag));
+                                }
+                              },
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),

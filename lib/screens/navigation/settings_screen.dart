@@ -15,29 +15,26 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(t.navigation.settings)),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Export and Import the database
-              DescriptionCardWidget(
-                title: t.settings.export_import.title,
-                subtitle: t.settings.export_import.subtitle,
-                child: const _ExportImport(),
-              ),
-              DescriptionCardWidget(
-                title: t.settings.local_storage.title,
-                subtitle: t.settings.local_storage.subtitle,
-                child: const _LocalStorage(),
-              ),
-              DescriptionCardWidget(
-                title: t.settings.about.title,
-                subtitle: t.settings.about.subtitle,
-                child: const _About(),
-              ),
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Export and Import the database
+            DescriptionCardWidget(
+              title: t.settings.export_import.title,
+              subtitle: t.settings.export_import.subtitle,
+              child: const _ExportImport(),
+            ),
+            DescriptionCardWidget(
+              title: t.settings.local_storage.title,
+              subtitle: t.settings.local_storage.subtitle,
+              child: const _LocalStorage(),
+            ),
+            DescriptionCardWidget(
+              title: t.settings.about.title,
+              subtitle: t.settings.about.subtitle,
+              child: const _About(),
+            ),
+          ],
         ),
       ),
     );

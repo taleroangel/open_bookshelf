@@ -41,7 +41,8 @@ class SettingsService {
   Future<void> import() async {
     // File picker
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowedExtensions: const ['.json'],
+      type: FileType.custom,
+      allowedExtensions: const ['json'],
     );
 
     // Any file selected
