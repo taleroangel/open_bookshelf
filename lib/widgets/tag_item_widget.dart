@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:open_bookshelf/models/tag.dart';
 import 'package:expandable/expandable.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/widgets/book_pick_widget.dart';
+import 'package:open_bookshelf/widgets/book_pick_card_widget.dart';
 import 'package:provider/provider.dart';
 
 const _gridSpacing = 1.0;
@@ -22,7 +22,7 @@ class TagItemWidget extends StatelessWidget {
     final bookshelfProvider = context.watch<BookshelfProvider>();
     final booksWithTag = bookshelfProvider
         .booksWithTag(tag)
-        .map((e) => BookPickWidget(
+        .map((e) => BookPickCardWidget(
               book: e,
               onTap: (book) {
                 // Set selected book as current book
@@ -59,9 +59,9 @@ class TagItemWidget extends StatelessWidget {
                   builder: (_, constraints) => GridView.count(
                     shrinkWrap: true,
                     crossAxisCount:
-                        constraints.maxWidth ~/ BookPickWidget.boxSize,
+                        constraints.maxWidth ~/ BookPickCardWidget.boxSize,
                     padding: const EdgeInsets.all(2 * _gridSpacing),
-                    childAspectRatio: BookPickWidget.boxAspectRatio,
+                    childAspectRatio: BookPickCardWidget.boxAspectRatio,
                     mainAxisSpacing: 2 * _gridSpacing,
                     crossAxisSpacing: _gridSpacing,
                     children: booksWithTag,

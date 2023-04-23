@@ -59,6 +59,7 @@ class BookScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
                         child: CollectionPickerWidget(
+                          key: ObjectKey(book),
                           initialValue: book.collection,
                           onSelect: (value) {
                             if (useThisBookInstead == null) {

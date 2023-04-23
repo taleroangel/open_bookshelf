@@ -3,11 +3,15 @@ import 'package:open_bookshelf/models/book.dart';
 
 const _titlePadding = 16.0;
 
-class BookPickWidget extends StatelessWidget {
+class BookPickCardWidget extends StatelessWidget {
   static const boxSize = 160;
   static const boxAspectRatio = 0.65;
 
-  const BookPickWidget({required this.book, required this.onTap, super.key});
+  const BookPickCardWidget({
+    required this.book,
+    required this.onTap,
+    super.key,
+  });
 
   final Book book;
   final void Function(Book book) onTap;

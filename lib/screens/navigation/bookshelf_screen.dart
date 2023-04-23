@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/widgets/book_pick_widget.dart';
+import 'package:open_bookshelf/widgets/book_pick_card_widget.dart';
 import 'package:open_bookshelf/widgets/collection_picker_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ class BookshelfScreen extends StatelessWidget {
           final bookshelf = provider.bookshelf.values
               .filterBooksByCollection(filter)
               // wrap books into a BookPickWidget
-              .map((e) => BookPickWidget(
+              .map((e) => BookPickCardWidget(
                     key: ObjectKey(e),
                     book: e,
                     onTap: (book) {
@@ -80,17 +80,16 @@ class BookshelfScreen extends StatelessWidget {
                             ),
                           )
                         : LayoutBuilder(
-                            builder: (_, constraints) {
-                              return GridView.count(
-                                crossAxisCount: constraints.maxWidth ~/
-                                    BookPickWidget.boxSize,
-                                padding: const EdgeInsets.all(2 * _gridSpacing),
-                                childAspectRatio: BookPickWidget.boxAspectRatio,
-                                mainAxisSpacing: 2 * _gridSpacing,
-                                crossAxisSpacing: _gridSpacing,
-                                children: bookshelf,
-                              );
-                            },
+                            builder: (_, constraints) => GridView.count(
+                              crossAxisCount: constraints.maxWidth ~/
+                                  BookPickCardWidget.boxSize,
+                              padding: const EdgeInsets.all(2 * _gridSpacing),
+                              childAspectRatio:
+                                  BookPickCardWidget.boxAspectRatio,
+                              mainAxisSpacing: 2 * _gridSpacing,
+                              crossAxisSpacing: _gridSpacing,
+                              children: bookshelf,
+                            ),
                           ),
               ),
             ],

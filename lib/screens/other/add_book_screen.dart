@@ -62,7 +62,7 @@ class AddBookScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: layout.map((e) => Expanded(child: e)).toList(),
               ),
-            )
+            ),
           },
         ),
       ),
@@ -104,6 +104,7 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(t.addbook.already_exists)));
       Navigator.of(context).pop();
+
       return;
     }
 
@@ -111,20 +112,20 @@ class _ISBNQuerySearchState extends State<_ISBNQuerySearch> {
     GetIt.I.get<OpenlibraryService>().fetchBook(isbn).then((Book? value) {
       if (value == null) {
         showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  content: Text(
-                    t.addbook.openlibrary.not_found,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  actions: [
-                    TextButton(
-                        onPressed: Navigator.of(context).pop,
-                        child: Text(
-                          t.general.button.ok,
-                        ))
-                  ],
-                ));
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Text(
+              t.addbook.openlibrary.not_found,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            actions: [
+              TextButton(
+                onPressed: Navigator.of(context).pop,
+                child: Text(t.general.button.ok),
+              ),
+            ],
+          ),
+        );
       } else {
         // Found book
         GetIt.I.get<Logger>().i("Found book: ${value.title}");

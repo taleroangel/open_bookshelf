@@ -32,7 +32,6 @@ class OpenlibraryService {
             (decodedBody as Map<String, dynamic>).values.first;
 
         // Book from json.
-        //TODO: Check if code still works after refactoring from dynamic to Object?
         return Book.fromJson({
           "cover": (apiResponse['details']['covers'] as List<Object?>?)
               ?.first
@@ -40,8 +39,8 @@ class OpenlibraryService {
           "title": apiResponse['details']['full_title'] ??
               apiResponse['details']['title'],
           "subtitle": apiResponse['details']['subtitle'],
-          "isbn": apiResponse['details']['isbn_13'][0] ??
-              apiResponse['details']['isbn_10'][0],
+          "isbn": (apiResponse['details']['isbn_13'] ??
+              apiResponse['details']['isbn_10'])[0],
           "url": apiResponse['info_url'],
           "authors":
               ((apiResponse['details']['authors'] ?? []) as List<Object?>)
