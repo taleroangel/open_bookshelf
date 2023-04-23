@@ -42,7 +42,7 @@ void main() async {
     // Logger
     GetIt.I.registerSingleton(Logger(
       printer: PrettyPrinter(),
-      level: kDebugMode ? Level.debug : Level.warning,
+      level: kDebugMode ? Level.verbose : Level.warning,
     ));
 
     // Register all services and dependencies
@@ -58,6 +58,7 @@ void main() async {
 
     // Get all dependencies ready
     await GetIt.I.allReady();
+    GetIt.I.get<Logger>().d("All dependencies ready");
 
     // Run the application
     runApp(TranslationProvider(child: const Application()));

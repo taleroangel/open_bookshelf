@@ -5,7 +5,9 @@
 		"title": "Search on OpenLibrary",
 		"subtitle": "Book by ISBN",
 		"submit": "Check on OpenLibrary",
-		"not_found": "Couldn't find book on OpenLibrary"
+		"not_found": "Couldn't find book on OpenLibrary",
+		"scan": "Scan ISBN barcode",
+		"failed_scan": "Failed to scan ISBN from barcode"
 	},
 	"manual": {
 		"title": "Manually add a book",
