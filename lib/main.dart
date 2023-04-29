@@ -1,13 +1,12 @@
 // Flutter
 // ignore_for_file: prefer-match-file-name
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-
-// Providers
-import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/providers/sideview_provider.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:open_bookshelf/application.dart';
 
 // Services
 import 'package:open_bookshelf/services/cache_storage_service.dart';
@@ -16,22 +15,23 @@ import 'package:open_bookshelf/services/openlibrary_service.dart';
 
 // Other
 import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/layout.dart';
 import 'package:open_bookshelf/services/settings_service.dart';
-import 'package:open_bookshelf/theme.dart';
 
 // Packages
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 
 void main() async {
   try {
     // Flutter is initialized
-    WidgetsFlutterBinding.ensureInitialized();
+    final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+    // Add splash screen
+    if (Platform.isAndroid || Platform.isIOS) {
+      FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    }
 
     // Initialize Locale
     LocaleSettings.useDeviceLocale();
@@ -60,6 +60,11 @@ void main() async {
     await GetIt.I.allReady();
     GetIt.I.get<Logger>().d("All dependencies ready");
 
+    // Remove splash screen
+    if (Platform.isAndroid || Platform.isIOS) {
+      FlutterNativeSplash.remove();
+    }
+
     // Run the application
     runApp(TranslationProvider(child: const Application()));
   } catch (e) {
@@ -68,59 +73,5 @@ void main() async {
         .get<Logger>()
         .wtf("Unhandled exception in main application isolate");
     runApp(FailedApplication(exception: e));
-  }
-}
-
-class Application extends StatelessWidget {
-  const Application({super.key});
-
-  @override
-  Widget build(BuildContext context) => DynamicColorBuilder(
-        builder: (lightDynamic, darkDynamic) => MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => SideviewProvider()),
-            ChangeNotifierProvider(create: (_) => BookshelfProvider()),
-          ],
-          builder: (context, child) => MaterialApp(
-            locale: TranslationProvider.of(context).flutterLocale,
-            supportedLocales: AppLocaleUtils.supportedLocales,
-            localizationsDelegates: GlobalMaterialLocalizations.delegates,
-            theme: customThemeData(lightDynamic, Brightness.light),
-            darkTheme: customThemeData(darkDynamic, Brightness.dark),
-            themeMode: ThemeMode.system,
-            home: const Layout(),
-          ),
-        ),
-      );
-}
-
-class FailedApplication extends StatelessWidget {
-  const FailedApplication({required this.exception, super.key});
-
-  final Object? exception;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: customThemeData(null, Brightness.dark),
-      home: Scaffold(
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Icon(
-              Icons.warning_rounded,
-              color: fallbackPrimaryColor,
-              size: 150.0,
-            ),
-            Text(
-              exception.toString(),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -121,7 +121,7 @@ class CacheStorageService {
 
   /// Get the default book cover
   Future<Uint8List> _getDefaultCover() async {
-    final bytes = await rootBundle.load('assets/images/missing_cover.jpg');
+    final bytes = await rootBundle.load('assets/images/missing_cover.png');
 
     return bytes.buffer.asUint8List();
   }

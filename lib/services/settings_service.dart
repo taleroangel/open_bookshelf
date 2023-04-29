@@ -6,6 +6,7 @@ import 'package:open_bookshelf/exceptions/database_exception.dart';
 import 'package:open_bookshelf/interfaces/database_controller.dart';
 import 'package:open_bookshelf/interfaces/json_manipulator.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SettingsService {
   SettingsService({required this.databaseController});
@@ -14,9 +15,12 @@ class SettingsService {
 
   Future<File> export() async {
     // Get the platform download directory
-    final platformDirectory = await (Platform.isAndroid
-        ? getExternalStorageDirectory()
-        : getDownloadsDirectory());
+    //TODO: Doesn't work for Android
+    if (Platform.isAndroid) {
+      await Permission.storage.request();
+    }
+
+    final platformDirectory = await getDownloadsDirectory();
 
     if (platformDirectory == null) {
       throw UnsupportedError("Unsupported platform");

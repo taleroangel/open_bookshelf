@@ -30,16 +30,16 @@ class AddBookScreen extends StatelessWidget {
         child: const _ISBNQuerySearch(),
       ),
 
-      // Manually insert
-      DescriptionCardWidget(
-        dividerHeight: 32.0,
-        margin: const EdgeInsets.all(8.0),
-        padding: const EdgeInsets.all(32.0),
-        crossAxisAlignment: CrossAxisAlignment.center,
-        title: t.addbook.manual.title,
-        subtitle: t.addbook.manual.subtitle,
-        child: const Placeholder(),
-      ),
+      // // Manually insert
+      // DescriptionCardWidget(
+      //   dividerHeight: 32.0,
+      //   margin: const EdgeInsets.all(8.0),
+      //   padding: const EdgeInsets.all(32.0),
+      //   crossAxisAlignment: CrossAxisAlignment.center,
+      //   title: t.addbook.manual.title,
+      //   subtitle: t.addbook.manual.subtitle,
+      //   child: const Placeholder(),
+      // ),
     ];
 
     return Scaffold(

@@ -9,6 +9,8 @@
 	</queries>
 	<!-- Required to fetch data from the internet. -->
 	<uses-permission android:name="android.permission.INTERNET" />
+	<!-- Required to fetch downloads directory -->
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<application
 		android:label="OpenBookshelf"
 		android:name="${applicationName}"

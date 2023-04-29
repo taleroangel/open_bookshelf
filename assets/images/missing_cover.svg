@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 631 966" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <style bx:fonts="Adamina">@import url(https://fonts.googleapis.com/css2?family=Adamina%3Aital%2Cwght%400%2C400&amp;display=swap);</style>
+  </defs>
+  <rect width="631" height="966" style="fill: rgb(253, 221, 189);"/>
+  <g transform="matrix(1, 0, 0, 1, 0, -101.941711)">
+    <text style="fill: rgb(43, 23, 0); font-family: Adamina; font-size: 90px; text-anchor: middle; white-space: pre;" transform="matrix(1, 0, 0, 1, 102.584396, 12.076401)"><tspan x="212.729" y="429.739">Missing</tspan><tspan x="212.729" dy="1em">​</tspan><tspan>Book</tspan><tspan x="212.729" dy="1em">​</tspan><tspan>Cover</tspan><tspan x="212.729" dy="1em">​</tspan></text>
+    <g style="" transform="matrix(0.342048, 0, 0, 0.342048, 229.751648, 669.795044)">
+      <title>icon</title>
+      <path d="M 38.042 91.504 L 38.042 352.593 C 38.042 373.359 54.914 392.827 75.68 395.422 L 82.819 396.288 C 129.975 402.561 202.656 426.571 244.188 449.5 C 247 451.231 250.461 451.88 254.354 451.88 L 254.354 105.131 C 250.244 105.131 246.134 104.05 242.89 102.103 L 239.212 99.724 C 200.709 75.497 131.705 52.351 86.28 48.458 L 84.982 48.458 C 59.241 46.295 38.042 65.546 38.042 91.504 Z" style="fill: rgb(43, 23, 0);">
+        <title>left_wing</title>
+      </path>
+      <path d="M 247.028 408.582 L 247.028 147.493 C 247.028 126.727 263.9 107.259 284.666 104.664 L 291.805 103.798 C 338.961 97.525 411.642 73.515 453.174 50.586 C 455.986 48.855 459.447 48.206 463.34 48.206 L 463.34 394.955 C 459.23 394.955 455.12 396.036 451.876 397.983 L 448.198 400.362 C 409.695 424.589 340.691 447.735 295.266 451.628 L 293.968 451.628 C 268.227 453.791 247.028 434.54 247.028 408.582 Z" style="stroke-width: 0px; fill: rgb(43, 23, 0);" transform="matrix(-1, 0, 0, -1, 710.367996, 499.999802)">
+        <title>right_wing</title>
+      </path>
+      <path d="M 401.419 46.718 L 401.419 139.516 C 401.419 148.169 391.901 153.36 384.546 148.601 L 358.156 131.08 L 331.766 148.601 C 324.628 153.36 314.894 148.169 314.894 139.516 L 314.894 71.378 C 343.231 60.13 374.812 51.045 401.419 46.718 Z" style="stroke-width: 0px; fill: rgb(255, 221, 186);">
+        <title>bookmark</title>
+      </path>
+    </g>
+  </g>
+  <rect style="stroke: rgb(43, 23, 0); fill: none; stroke-dasharray: 30px; stroke-miterlimit: 1; paint-order: fill; stroke-dashoffset: 38px; stroke-width: 2px;" x="51.702" y="51.702" width="527.596" height="862.597" rx="15" ry="15"/>
+</svg>
