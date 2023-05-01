@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const primaryColor = Color(0xffd2ae88);
+const openBookshelfPrimaryColor = Color(0xffd2ae88);
 
 customThemeData(
   ColorScheme? colorScheme, [
@@ -8,7 +8,7 @@ customThemeData(
 ]) {
   final customColorScheme = colorScheme ??
       ColorScheme.fromSeed(
-        seedColor: primaryColor,
+        seedColor: openBookshelfPrimaryColor,
         brightness: brightness,
       );
 

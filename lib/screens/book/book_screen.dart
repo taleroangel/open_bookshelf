@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:open_bookshelf/constants/open_library_endpoints.dart';
-import 'package:open_bookshelf/models/book.dart';
-import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/widgets/collection_picker_widget.dart';
-import 'package:open_bookshelf/widgets/text_with_icon_widget.dart';
-import 'package:open_bookshelf/widgets/book_cover_widget.dart';
-import 'package:open_bookshelf/widgets/tag_picker_widget.dart';
+
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Displays a book provided by [BookshelfProvider], if 'useThisBookInstead' parameter is non-null,
+import 'package:open_bookshelf/constants/open_library_endpoints.dart';
+import 'package:open_bookshelf/i18n/translations.g.dart';
+import 'package:open_bookshelf/models/book.dart';
+import 'package:open_bookshelf/providers/bookshelf_provider.dart';
+import 'package:open_bookshelf/widgets/book_cover_widget.dart';
+import 'package:open_bookshelf/widgets/collection_picker_widget.dart';
+import 'package:open_bookshelf/widgets/tag_picker_widget.dart';
+import 'package:open_bookshelf/widgets/text_with_icon_widget.dart';
+
+/// Displays a book provided by [IBookshelfProvider], if 'useThisBookInstead' parameter is non-null,
 /// that book is asumed not to be present in database and [BookshelfProvided will be ignored], instead
 /// changes will be made directly to provided book and database functionality is disabled
 class BookScreen extends StatelessWidget {
@@ -27,11 +29,10 @@ class BookScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BookshelfProvider>(
+    return Consumer<IBookshelfProvider>(
       builder: (context, bookshelfProvider, child) {
         // Book currently selected, either provided via parameter or present in database
-        final Book? book =
-            useThisBookInstead ?? bookshelfProvider.currentlySelectedBook;
+        final Book? book = useThisBookInstead ?? bookshelfProvider.selectedBook;
 
         // If no book is selected
         return book == null
@@ -62,11 +63,7 @@ class BookScreen extends StatelessWidget {
                           key: ObjectKey(book),
                           initialValue: book.collection,
                           onSelect: (value) {
-                            if (useThisBookInstead == null) {
-                              bookshelfProvider.updateBookCollection(value);
-                            } else {
-                              book.collection = value;
-                            }
+                            //TODO: Book collection selection
                           },
                         ),
                       ),
@@ -158,24 +155,18 @@ class BookScreen extends StatelessWidget {
                         ),
 
                       // Tag picker
-                      if (bookshelfProvider.tags.isNotEmpty)
-                        SizedBox(
-                          height: 80.0,
-                          child: StatefulBuilder(
-                            builder: (context, setState) => TagPickerWidget(
-                              showCreateTag: useThisBookInstead == null,
-                              book: book,
-                              onSelect: (tag) {
-                                if (useThisBookInstead == null) {
-                                  bookshelfProvider.addOrRemoveBookTag(tag);
-                                } else {
-                                  setState(() =>
-                                      useThisBookInstead!.addOrRemoveTag(tag));
-                                }
-                              },
-                            ),
+                      SizedBox(
+                        height: 80.0,
+                        child: StatefulBuilder(
+                          builder: (context, setState) => TagPickerWidget(
+                            showCreateTag: useThisBookInstead == null,
+                            book: book,
+                            onSelect: (tag) {
+                              //TODO: Selected tag
+                            },
                           ),
                         ),
+                      ),
                     ],
                   ),
                 ),
@@ -201,6 +192,7 @@ class _DeleteBookButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
+        // Show deletion confirmation prompt
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -225,20 +217,19 @@ class _DeleteBookButton extends StatelessWidget {
           ),
         ).then((userConfirmed) {
           if (userConfirmed) {
-            context
-                .read<BookshelfProvider>()
-                .deleteCurrentBook()
-                .then((bookDeleteResult) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-                  bookDeleteResult
-                      ? t.book.delete.success
-                      : t.book.delete.failure,
-                ),
-              ));
-              // Get out of the screen, to main menu
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            });
+            //TODO: Delete book
+
+            // Show confirmation screen
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(t.book.delete.success),
+            ));
+            // Get out of the screen, to main menu
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          } else {
+            // Show deletion failures
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(t.book.delete.failure),
+            ));
           }
         });
       },

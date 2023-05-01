@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:open_bookshelf/models/book.dart';
 
+/// Show collections in a [SegmentedButton]
 class CollectionPickerWidget extends StatefulWidget {
   const CollectionPickerWidget({
     this.initialValue = BookCollection.none,

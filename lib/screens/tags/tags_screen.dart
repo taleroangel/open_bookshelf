@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/widgets/tag_item_widget.dart';
-import 'package:provider/provider.dart';
 
-class LabelsScreen extends StatelessWidget {
-  const LabelsScreen({super.key});
+class TagsScreen extends StatelessWidget {
+  const TagsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bookshelfProvider = context.watch<BookshelfProvider>();
+    // Get bookshelf provider
+    final provider = context.watch<IBookshelfProvider>();
 
     return Scaffold(
       appBar: AppBar(title: Text(t.navigation.labels)),
-      body: bookshelfProvider.tags.isEmpty
+      body: provider.tags.isEmpty
           ? Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,11 +42,11 @@ class LabelsScreen extends StatelessWidget {
               ),
             )
           : ListView.builder(
-              itemCount: bookshelfProvider.tags.length,
+              itemCount: provider.tags.length,
               itemBuilder: (context, index) => TagItemWidget(
-                key: ObjectKey(bookshelfProvider.tags.elementAt(index)),
+                key: ObjectKey(provider.tags.elementAt(index)),
                 initExpanded: index == 0,
-                tag: bookshelfProvider.tags.elementAt(index),
+                tag: provider.tags.elementAt(index),
               ),
             ),
     );

@@ -1,12 +1,11 @@
 import 'package:open_bookshelf/exceptions/open_bookshelf_exception.dart';
 
-class ResourceAlreadyExistsException extends OpenBookshelfException {
+class ResourceNotInCacheException extends OpenBookshelfException {
   final String resource;
 
-  const ResourceAlreadyExistsException({
+  const ResourceNotInCacheException({
     required this.resource,
-    message =
-        "The content you're trying to store already exists in the device cache",
+    message = "The specified resource was not found in the device cache",
   }) : super(message: message);
 
   @override

@@ -1,10 +1,16 @@
 DARTC = dart
 PUBSPEC = pubspec.yaml
 
-all: pub flutter_native_splash flutter_launcher_icons
+all: pub build_runner slang flutter_native_splash flutter_launcher_icons
 
 pub: $(PUBSPEC)
 	$(DARTC) pub get
+
+build_runner:
+	$(DARTC) run build_runner build
+
+slang:
+	$(DARTC) run slang build
 
 flutter_native_splash: pub assets/icons/icon.png
 	$(DARTC) run flutter_native_splash:create

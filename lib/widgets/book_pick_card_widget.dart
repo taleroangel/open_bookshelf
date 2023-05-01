@@ -3,6 +3,8 @@ import 'package:open_bookshelf/models/book.dart';
 
 const _titlePadding = 16.0;
 
+/// Show a card with a [Book] item.
+/// creates a [OnBookSelectionNotification] when clicked
 class BookPickCardWidget extends StatelessWidget {
   static const boxSize = 160;
   static const boxAspectRatio = 0.65;
@@ -90,3 +92,6 @@ class BookPickCardWidget extends StatelessWidget {
     );
   }
 }
+
+/// Notification when a book is clicked
+class OnBookSelectionNotification extends Notification {}

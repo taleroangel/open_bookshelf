@@ -8,6 +8,8 @@ class BarcodeScannerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // onDetect may be called multiple times, this variable
+    // makes Navigator not pop route more than onces
     var popAvailable = true;
 
     return Scaffold(

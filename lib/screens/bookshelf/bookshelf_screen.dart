@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
+import 'package:open_bookshelf/screens/bookshelf/add_book_screen.dart';
 import 'package:open_bookshelf/widgets/book_pick_card_widget.dart';
 import 'package:open_bookshelf/widgets/collection_picker_widget.dart';
-import 'package:provider/provider.dart';
 
 const _gridSpacing = 4.0;
 
@@ -14,15 +17,25 @@ class BookshelfScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Current book filter
     var filter = BookCollection.none;
 
     return Scaffold(
       appBar: AppBar(title: Text(t.navigation.bookshelf)),
+      // Add book button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => const AddBookScreen(),
+        )),
+        child: const Icon(Icons.add),
+      ),
       body: StatefulBuilder(
         builder: (context, setState) {
-          final provider = context.watch<BookshelfProvider>();
+          // Watch for bookshelf contents
+          final provider = context.watch<IBookshelfProvider>();
+
           // Filter bookshelf by collection
-          final bookshelf = provider.bookshelf.values
+          final bookshelf = provider.books
               .filterBooksByCollection(filter)
               // wrap books into a BookPickWidget
               .map((e) => BookPickCardWidget(
@@ -30,10 +43,11 @@ class BookshelfScreen extends StatelessWidget {
                     book: e,
                     onTap: (book) {
                       // Set selected book as current book
-                      provider.currentlySelectedBook = book;
+                      provider.selectedBook = book;
                       // Dispatch book selection notification
-                      context
-                          .dispatchNotification(OnBookSelectionNotification());
+                      context.dispatchNotification(
+                        OnBookSelectionNotification(),
+                      );
                     },
                   ))
               .toList();

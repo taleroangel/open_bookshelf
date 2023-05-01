@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'package:open_bookshelf/database/converters/color_json_converter.dart';
 
 part 'tag.freezed.dart';
 part 'tag.g.dart';
 
-@Freezed()
+@freezed
 class Tag with _$Tag {
   const factory Tag({
     required String name,
@@ -20,18 +23,4 @@ class Tag with _$Tag {
 
   @override
   int get hashCode => name.hashCode;
-}
-
-class ColorJsonConverter extends JsonConverter<Color, int> {
-  const ColorJsonConverter();
-
-  @override
-  Color fromJson(int json) {
-    return Color(json);
-  }
-
-  @override
-  int toJson(Color object) {
-    return object.value;
-  }
 }

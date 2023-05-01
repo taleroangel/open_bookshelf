@@ -46,7 +46,6 @@ dependencies:
   # Icons and Splash
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.19
-  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:
@@ -89,9 +88,11 @@ flutter_native_splash:
 
 flutter_launcher_icons:
 
+  android: true
+  linux: true
+
   image_path: "assets/icons/icon.png"
   background_color: "#2b1700"
-
-  android:
-    adaptive_icon_foreground: "assets/icons/padding.png"
-    adaptive_icon_background: "#2b1700"
+  
+  adaptive_icon_foreground: "assets/icons/padding.png"
+  adaptive_icon_background: "#2b1700"

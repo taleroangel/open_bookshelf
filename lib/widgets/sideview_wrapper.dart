@@ -3,15 +3,15 @@ import 'package:open_bookshelf/providers/sideview_provider.dart';
 import 'package:provider/provider.dart';
 
 /// Allows [SideviewProvider] to tell when the sideview is enabled or disabled
-class SideviewWidget extends StatefulWidget {
-  const SideviewWidget({required this.child, super.key});
+class SideviewWrapper extends StatefulWidget {
+  const SideviewWrapper({required this.child, super.key});
   final Widget child;
 
   @override
-  State<SideviewWidget> createState() => _SideviewWidgetState();
+  State<SideviewWrapper> createState() => _SideviewWrapperState();
 }
 
-class _SideviewWidgetState extends State<SideviewWidget> {
+class _SideviewWrapperState extends State<SideviewWrapper> {
   late final SideviewProvider provider;
 
   /// [SideviewProvider] will enable side preview

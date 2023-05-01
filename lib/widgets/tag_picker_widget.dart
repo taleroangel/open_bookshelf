@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/models/tag.dart';
-import 'package:open_bookshelf/models/book.dart';
-import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:provider/provider.dart';
+
+import 'package:open_bookshelf/i18n/translations.g.dart';
+import 'package:open_bookshelf/models/book.dart';
+import 'package:open_bookshelf/models/tag.dart';
+import 'package:open_bookshelf/providers/bookshelf_provider.dart';
+
+//TODO: Documentation
 class TagPickerWidget extends StatelessWidget {
   const TagPickerWidget({
     required this.onSelect,
@@ -22,7 +25,7 @@ class TagPickerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
 
-    final bookshelfProvider = context.watch<BookshelfProvider>();
+    final bookshelfProvider = context.watch<IBookshelfProvider>();
     final tags = bookshelfProvider.tags.map((e) {
       return ActionChip(
         elevation: book.tags.contains(e) ? 10 : 0,
@@ -40,7 +43,7 @@ class TagPickerWidget extends StatelessWidget {
         avatar: const Icon(Icons.add),
         onPressed: () => showDialog(
           context: context,
-          builder: (context) => const _CreateTag(),
+          builder: (context) => const _AddNewTag(),
         ).then((value) {
           // Response
           if (value is Map<String, dynamic> &&
@@ -79,8 +82,8 @@ class TagPickerWidget extends StatelessWidget {
   }
 }
 
-class _CreateTag extends StatelessWidget {
-  const _CreateTag();
+class _AddNewTag extends StatelessWidget {
+  const _AddNewTag();
 
   @override
   Widget build(BuildContext context) {

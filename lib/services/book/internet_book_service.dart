@@ -6,10 +6,11 @@ import 'package:open_bookshelf/exceptions/failed_to_fetch_content_exception.dart
 import 'package:open_bookshelf/models/book.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_bookshelf/constants/open_library_endpoints.dart';
+import 'package:open_bookshelf/services/book_service.dart';
 
-/// Service class with abstractions to handle the OpenLibrary's API..
-class OpenlibraryService {
-  /// Fetch a [Book] by it's ISBN from OpenLibrary's Book API..
+/// Service class with abstractions to handle the OpenLibrary's Book API
+class InternetBookService implements IBookService {
+  @override
   Future<Book?> fetchBook(String isbn) async {
     try {
       GetIt.I.get<Logger>().i("OpenLibrary API ISBN request in progress");
@@ -31,7 +32,7 @@ class OpenlibraryService {
         Map<String, dynamic> apiResponse =
             (decodedBody as Map<String, dynamic>).values.first;
 
-        // Book from json.
+        // Construct book from API response
         return Book.fromJson({
           "cover": (apiResponse['details']['covers'] as List<Object?>?)
               ?.first

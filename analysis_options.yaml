@@ -31,6 +31,10 @@ linter:
 analyzer:
   plugins:
     - dart_code_metrics
+  
+  exclude: 
+    - lib/models/*.g.dart
+    - lib/models/*.freezed.dart
 
 dart_code_metrics:
 

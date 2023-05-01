@@ -2,35 +2,28 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/layout.dart';
-import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/providers/sideview_provider.dart';
+import 'package:open_bookshelf/screens/layout.dart';
 import 'package:open_bookshelf/theme.dart';
-import 'package:provider/provider.dart';
 
+/// Initialize application with Theme
 class Application extends StatelessWidget {
   const Application({super.key});
 
   @override
   Widget build(BuildContext context) => DynamicColorBuilder(
-        builder: (lightDynamic, darkDynamic) => MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => SideviewProvider()),
-            ChangeNotifierProvider(create: (_) => BookshelfProvider()),
-          ],
-          builder: (context, child) => MaterialApp(
-            locale: TranslationProvider.of(context).flutterLocale,
-            supportedLocales: AppLocaleUtils.supportedLocales,
-            localizationsDelegates: GlobalMaterialLocalizations.delegates,
-            theme: customThemeData(lightDynamic, Brightness.light),
-            darkTheme: customThemeData(darkDynamic, Brightness.dark),
-            themeMode: ThemeMode.system,
-            home: const Layout(),
-          ),
+        builder: (lightDynamic, darkDynamic) => MaterialApp(
+          locale: TranslationProvider.of(context).flutterLocale,
+          supportedLocales: AppLocaleUtils.supportedLocales,
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
+          theme: customThemeData(lightDynamic, Brightness.light),
+          darkTheme: customThemeData(darkDynamic, Brightness.dark),
+          themeMode: ThemeMode.system,
+          home: const Layout(),
         ),
       );
 }
 
+/// Show on application initialization failure
 class FailedApplication extends StatelessWidget {
   const FailedApplication({required this.exception, super.key});
 
@@ -48,7 +41,7 @@ class FailedApplication extends StatelessWidget {
           children: [
             const Icon(
               Icons.warning_rounded,
-              color: primaryColor,
+              color: openBookshelfPrimaryColor,
               size: 150.0,
             ),
             Text(

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 const _gridSpacing = 1.0;
 
+//TODO: Documentation
 class TagItemWidget extends StatelessWidget {
   const TagItemWidget({
     required this.tag,
@@ -19,14 +20,14 @@ class TagItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bookshelfProvider = context.watch<BookshelfProvider>();
-    final booksWithTag = bookshelfProvider
-        .booksWithTag(tag)
+    final bookshelfProvider = context.watch<IBookshelfProvider>();
+    final booksWithTag = bookshelfProvider.books
+        .filterByTag(tag)
         .map((e) => BookPickCardWidget(
               book: e,
               onTap: (book) {
                 // Set selected book as current book
-                bookshelfProvider.currentlySelectedBook = book;
+                bookshelfProvider.selectedBook = book;
                 // Dispatch book selection notification
                 context.dispatchNotification(OnBookSelectionNotification());
               },

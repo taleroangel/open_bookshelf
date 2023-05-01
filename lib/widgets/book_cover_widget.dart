@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/screens/other/cover_screen.dart';
-import 'package:open_bookshelf/widgets/exception_widget.dart';
+import 'package:open_bookshelf/widgets/interactive_image.dart';
+
 import 'package:provider/provider.dart';
 
+import 'package:open_bookshelf/i18n/translations.g.dart';
+import 'package:open_bookshelf/models/book.dart';
+import 'package:open_bookshelf/widgets/exception_widget.dart';
+
+/// Show the cover of a [Book]
+/// Will use the 'selectedBook' from [IBookshelfProvider] if 'useThisBookInstead' is null
 class BookCoverWidget extends StatelessWidget {
   const BookCoverWidget({this.useThisBookInstead, super.key});
 
@@ -13,9 +17,9 @@ class BookCoverWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BookshelfProvider>(
+    return Consumer<IBookshelfProvider>(
       builder: (context, provider, child) => FutureBuilder(
-        future: (useThisBookInstead ?? provider.currentlySelectedBook)?.image,
+        future: (useThisBookInstead ?? provider.selectedBook)?.image,
         builder: (context, snapshot) {
           // If connectoin was successfull, then store image in internal cache
           if (snapshot.connectionState == ConnectionState.done) {
@@ -35,7 +39,7 @@ class BookCoverWidget extends StatelessWidget {
                 tag: "cover:zoom",
                 child: GestureDetector(
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => CoverScreen(child: image),
+                    builder: (_) => InteractiveImage(child: image),
                   )),
                   child: image,
                 ),
@@ -43,18 +47,15 @@ class BookCoverWidget extends StatelessWidget {
             }
           }
 
-          return Hero(
-            tag: "cover:zoom",
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircularProgressIndicator(),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(t.covers.fetching),
-                ),
-              ],
-            ),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(t.covers.fetching),
+              ),
+            ],
           );
         },
       ),
