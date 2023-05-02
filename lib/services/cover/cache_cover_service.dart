@@ -8,12 +8,9 @@ import 'package:open_bookshelf/services/storage/cache_storage_service.dart';
 import 'package:open_bookshelf/services/cover_service.dart';
 
 class CacheCoverService implements ICoverService {
-  CacheCoverService._(this.cacheStorageService);
-
-  static Future<CacheCoverService> getInstance() async =>
-      CacheCoverService._(await CacheStorageService.getInstance());
-
-  late final CacheStorageService cacheStorageService;
+  /// Storage service in which covers will be cached
+  late final CacheStorageService _storageService =
+      GetIt.I.get<CacheStorageService>();
 
   @override
   Future<Uint8List> fetchCover(String? coverId) async {
@@ -28,9 +25,17 @@ class CacheCoverService implements ICoverService {
     // If image is not present in cache download it
 
     // Return content
-    return await cacheStorageService.fetchContent(
+    return await _storageService.fetchContent(
       CacheStorageSource.images,
       "$coverId.jpg",
+    );
+  }
+
+  void storeCover(String? coverId, Uint8List cover) async {
+    await _storageService.storeContent(
+      CacheStorageSource.images,
+      "$coverId.jpg",
+      cover,
     );
   }
 }

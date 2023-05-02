@@ -3,6 +3,7 @@
 import 'dart:typed_data';
 
 import 'package:open_bookshelf/exceptions/resource_already_exists_exception.dart';
+import 'package:open_bookshelf/exceptions/resource_not_in_cache_exception.dart';
 
 /// Source from where the cache will be retrieved
 /// Intented to be extended by enums
@@ -17,8 +18,8 @@ abstract class IStorageService {
   Future<double> sizeOf(StorageSource storageSource);
 
   /// Deletes all contents inside [StorageSource]
-  /// Returns the result of the deletion
-  Future<bool> delete(StorageSource storageSource);
+  /// Throws [ResourceNotInCacheException] when source does not exist
+  Future<void> delete(StorageSource storageSource);
 
   /// Fetch content from cache
   Future<Uint8List> fetchContent(

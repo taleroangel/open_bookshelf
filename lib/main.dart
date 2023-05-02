@@ -10,7 +10,12 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+
+import 'package:open_bookshelf/application.dart';
 import 'package:open_bookshelf/database/adapters/book_type_adapter.dart';
+import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/providers/bookshelf/hive_bookshelf_provider.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
@@ -19,11 +24,7 @@ import 'package:open_bookshelf/services/cover/cache_cover_service.dart';
 import 'package:open_bookshelf/services/cover/internet_cover_service.dart';
 import 'package:open_bookshelf/services/cover/system_cover_service.dart';
 import 'package:open_bookshelf/services/cover_service.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'package:open_bookshelf/application.dart';
-import 'package:open_bookshelf/i18n/translations.g.dart';
-import 'package:provider/provider.dart';
+import 'package:open_bookshelf/services/storage/cache_storage_service.dart';
 
 void main() async {
   try {
@@ -49,17 +50,18 @@ void main() async {
 
     // Logger
     GetIt.I.registerSingleton(Logger(
-      printer: PrettyPrinter(),
+      printer: kDebugMode ? PrettyPrinter() : SimplePrinter(printTime: true),
       level: kDebugMode ? Level.verbose : Level.warning,
     ));
 
     //* Register dependencies
 
     // Transient dependencies
-    GetIt.I.registerSingletonAsync(CacheCoverService.getInstance);
+    GetIt.I.registerSingleton(CacheCoverService());
     GetIt.I.registerSingleton(InternetCoverService());
 
     // Global dependencies
+    GetIt.I.registerSingletonAsync(CacheStorageService.getInstance);
     GetIt.I.registerSingleton<ICoverService>(SystemCoverService());
 
     //* Get all dependencies ready

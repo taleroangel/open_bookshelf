@@ -57,7 +57,8 @@ abstract class IBookshelfProvider extends ChangeNotifier {
 
 extension BookExtensions on Iterable<Book> {
   /// Get all books where [Tag] is present
-  filterByTag(Tag tag) => where((element) => element.tags.contains(tag));
+  Iterable<Book> filterByTag(Tag tag) =>
+      where((element) => element.tags.contains(tag));
 
   // Filter books by it's [BookCollection], when no collection is selected
   /// all books are returned
@@ -65,5 +66,15 @@ extension BookExtensions on Iterable<Book> {
     if (collection == BookCollection.none) return this;
 
     return where((element) => element.collection == collection);
+  }
+}
+
+extension TagExtensions on Set<Tag> {
+  /// Remove tag if present, add it if missing
+  Set<Tag> addOrRemoveTag(Tag tag) {
+    final copySet = Set<Tag>.from(this);
+    contains(tag) ? (copySet.remove(tag)) : (copySet.add(tag));
+
+    return copySet;
   }
 }

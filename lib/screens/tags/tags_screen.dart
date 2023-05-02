@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
-import 'package:open_bookshelf/widgets/tag_item_widget.dart';
+import 'package:open_bookshelf/screens/tags/tag_expandable.dart';
 
 class TagsScreen extends StatelessWidget {
   const TagsScreen({super.key});
@@ -43,7 +43,7 @@ class TagsScreen extends StatelessWidget {
             )
           : ListView.builder(
               itemCount: provider.tags.length,
-              itemBuilder: (context, index) => TagItemWidget(
+              itemBuilder: (context, index) => TagExpandable(
                 key: ObjectKey(provider.tags.elementAt(index)),
                 initExpanded: index == 0,
                 tag: provider.tags.elementAt(index),

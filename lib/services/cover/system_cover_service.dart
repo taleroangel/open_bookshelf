@@ -18,14 +18,21 @@ class SystemCoverService implements ICoverService {
   }
 
   @override
-  Future<Uint8List> fetchCover(String? coverId) {
+  Future<Uint8List> fetchCover(String? coverId) async {
     try {
-      return _cacheCoverService.fetchCover(coverId);
+      // Fetch cover from cache first
+      return await _cacheCoverService.fetchCover(coverId);
     } on FailedToFetchContentException {
       try {
-        return _internetCoverService.fetchCover(coverId);
+        // Catch cover from internet
+        final internetCover = await _internetCoverService.fetchCover(coverId);
+        // Store cover on cache
+        _cacheCoverService.storeCover(coverId, internetCover);
+
+        // Return cover from internet
+        return internetCover;
       } on FailedToFetchContentException {
-        return defaultCover;
+        return await defaultCover;
       }
     }
   }

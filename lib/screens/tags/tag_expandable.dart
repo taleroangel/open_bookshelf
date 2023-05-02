@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 
 const _gridSpacing = 1.0;
 
-//TODO: Documentation
-class TagItemWidget extends StatelessWidget {
-  const TagItemWidget({
+/// Show an [Expandable] of a tag with the corresponding books classified
+class TagExpandable extends StatelessWidget {
+  const TagExpandable({
     required this.tag,
     this.initExpanded = false,
     super.key,
@@ -21,6 +21,8 @@ class TagItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bookshelfProvider = context.watch<IBookshelfProvider>();
+
+    // List of books with specified tag
     final booksWithTag = bookshelfProvider.books
         .filterByTag(tag)
         .map((e) => BookPickCardWidget(

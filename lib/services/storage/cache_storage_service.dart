@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
+import 'package:open_bookshelf/exceptions/resource_not_in_cache_exception.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:open_bookshelf/exceptions/failed_to_fetch_content_exception.dart';
@@ -71,7 +72,7 @@ class CacheStorageService implements IStorageService {
   }
 
   @override
-  Future<bool> delete(
+  Future<void> delete(
     covariant CacheStorageSource storageSource,
   ) async {
     // Get source directory
@@ -87,7 +88,7 @@ class CacheStorageService implements IStorageService {
           .e("Requested path '${sourceDirectory.path}' didn't exist");
 
       // Directory doesn't exist
-      return false;
+      throw ResourceNotInCacheException(resource: sourceDirectory.path);
     }
 
     // Delete the source
@@ -96,8 +97,6 @@ class CacheStorageService implements IStorageService {
 
     // Recreate storage paths
     await _ensurePathsExists();
-
-    return true;
   }
 
   @override
@@ -127,6 +126,7 @@ class CacheStorageService implements IStorageService {
   ) async {
     // Path to file
     final path = "${await storageSource.path}/$resource";
+    GetIt.I.get<Logger>().v("$runtimeType: Storing '$path' in cache");
 
     // Create file
     final file = File(path);

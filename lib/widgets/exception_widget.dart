@@ -9,23 +9,30 @@ class ExceptionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Card(
         color: Theme.of(context).colorScheme.onError,
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            children: [
-              Text(
-                t.general.misc.exception,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              Text(exception.runtimeType.toString()),
-              const SizedBox(
-                height: 16.0,
-              ),
-              Text(
-                exception.toString(),
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  t.general.misc.exception,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                Text(
+                  exception.runtimeType.toString(),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onErrorContainer,
+                  ),
+                ),
+                const SizedBox(
+                  height: 16.0,
+                ),
+                Text(
+                  exception.toString(),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
+            ),
           ),
         ),
       );

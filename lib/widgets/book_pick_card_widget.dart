@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:logger/logger.dart';
 import 'package:open_bookshelf/models/book.dart';
+import 'package:open_bookshelf/widgets/exception_widget.dart';
 
 const _titlePadding = 16.0;
 
@@ -23,6 +26,14 @@ class BookPickCardWidget extends StatelessWidget {
     return FutureBuilder(
       future: book.image,
       builder: (context, snapshot) {
+        // On error thrown
+        if (snapshot.hasError) {
+          GetIt.I.get<Logger>().e(snapshot.error);
+
+          return ExceptionWidget(exception: snapshot.error as Exception);
+        }
+
+        // Show card with image or circular progress bar
         return snapshot.connectionState == ConnectionState.done
             ? Card(
                 elevation: 2,

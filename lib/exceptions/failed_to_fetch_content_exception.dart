@@ -9,5 +9,5 @@ class FailedToFetchContentException extends OpenBookshelfException {
   }) : super(message: message);
 
   @override
-  String toString() => "[Resource: $resource] ${super.toString()}";
+  String toString() => "[Resource: $resource]\n${super.toString()}";
 }

@@ -6,5 +6,5 @@ class OpenBookshelfException implements Exception {
   });
 
   @override
-  String toString() => "$runtimeType: $message}";
+  String toString() => "$runtimeType: $message";
 }

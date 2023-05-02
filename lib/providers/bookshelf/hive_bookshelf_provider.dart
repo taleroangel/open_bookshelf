@@ -28,13 +28,7 @@ class HiveBookshelfProvider extends ChangeNotifier
   Book? _selectedBook;
 
   @override
-  Book? get selectedBook {
-    if (_selectedBook != null && !exists(_selectedBook!.isbn)) {
-      _selectedBook = null;
-    }
-
-    return _selectedBook;
-  }
+  Book? get selectedBook => _selectedBook;
 
   @override
   set selectedBook(Book? book) {
@@ -53,6 +47,12 @@ class HiveBookshelfProvider extends ChangeNotifier
     // Modify or Create book if Book is not null
     // If book is null then delete it
     book != null ? _database.put(isbn, book) : _database.delete(isbn);
+
+    // Change selected book
+    if (book?.isbn == _selectedBook?.isbn) {
+      _selectedBook = book;
+    }
+
     notifyListeners();
   }
 

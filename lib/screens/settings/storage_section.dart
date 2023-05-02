@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
+import 'package:open_bookshelf/services/storage/cache_storage_service.dart';
 import 'package:provider/provider.dart';
 
 /// Alter local storage settings
@@ -16,17 +16,15 @@ class StorageSection extends StatefulWidget {
 class _StorageSectionState extends State<StorageSection> {
   // Loading buttons state
   bool compactingDatabase = false;
-  bool clearingCache = false;
+  bool deletingCache = false;
   bool deletingDatabase = false;
-
-  late final IBookshelfProvider bookshelfProvider;
 
   void compactDatabase() {
     // Set state to compaction
     setState(() => (compactingDatabase = true));
 
     // Start a compaction
-    bookshelfProvider.compactDatabase().then((_) {
+    context.read<IBookshelfProvider>().compactDatabase().then((_) {
       // Show success
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(t.settings.local_storage.compact_database.success),
@@ -41,11 +39,10 @@ class _StorageSectionState extends State<StorageSection> {
     setState(() => (compactingDatabase = false)); // Set state back to normal
   }
 
-  void deleteDatabase() async {
+  void deleteDatabase() {
     setState(() => (deletingDatabase = true)); // Set state to compaction
-
     // Show AlertDialog for user confirmation
-    final response = await showDialog<bool>(
+    showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         content: Text(t.settings.local_storage.delete_database.confirm),
@@ -63,22 +60,34 @@ class _StorageSectionState extends State<StorageSection> {
           ),
         ],
       ),
-    );
-
-    // Wait for database deletion if user confirmed
-    if (response == true) {
-      bookshelfProvider.deleteDatabase();
-    }
-
-    setState(() => (deletingDatabase = false));
+    ).then((response) {
+      if (response == true) {
+        context.read<IBookshelfProvider>().deleteDatabase();
+      }
+    }).whenComplete(() {
+      setState(() => (deletingDatabase = false));
+    });
   }
 
-  @override
-  void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      bookshelfProvider = context.read<IBookshelfProvider>();
-    });
-    super.initState();
+  void deleteCache() {
+    // Change state to
+    setState(() => (deletingDatabase = true)); // Set state to cache deletion
+    // Prompt cache to delete the storage
+    GetIt.I
+        .get<CacheStorageService>()
+        .delete(CacheStorageSource.images)
+        .then((_) {
+      // Show success
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(t.settings.local_storage.delete_cache.success),
+      ));
+    }).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(t.settings.local_storage.delete_cache.failed),
+      ));
+    }).whenComplete(() => setState(
+              () => (deletingDatabase = false),
+            )); // Set state to cache deletion);
   }
 
   @override
@@ -89,10 +98,22 @@ class _StorageSectionState extends State<StorageSection> {
       children: [
         // Ammount of books stored
         Text(t.settings.local_storage
-            .books_stored(books: bookshelfProvider.length)),
+            .books_stored(books: context.read<IBookshelfProvider>().length)),
+
+        // Size of the cache
+        FutureBuilder(
+          future: GetIt.I
+              .get<CacheStorageService>()
+              .sizeOf(CacheStorageSource.images),
+          builder: (context, snapshot) =>
+              Text(t.settings.local_storage.cover_cache_size(
+            size: snapshot.data?.toStringAsFixed(2) ?? "...",
+          )),
+        ),
+
         // Size of the database
         FutureBuilder(
-          future: bookshelfProvider.size,
+          future: context.read<IBookshelfProvider>().size,
           builder: (context, snapshot) =>
               Text(t.settings.local_storage.bookshelf_size(
             size: snapshot.data?.toStringAsFixed(2) ?? "...",
@@ -103,8 +124,8 @@ class _StorageSectionState extends State<StorageSection> {
           height: 8.0,
         ),
 
-        // Buttons
         Column(
+          // Buttons
           children: [
             // Compact database button
             TextButton(
@@ -124,12 +145,30 @@ class _StorageSectionState extends State<StorageSection> {
               ),
             ),
 
+            // Delete cover cache
+            TextButton(
+              onPressed: deleteCache,
+              child: Row(
+                children: [
+                  if (compactingDatabase)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: SizedBox.square(
+                        dimension: 16.0,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  Text(t.settings.local_storage.delete_cache.button),
+                ],
+              ),
+            ),
+
             // Button to delete the database
             TextButton(
               onPressed: deleteDatabase,
               child: Row(
                 children: [
-                  if (deletingDatabase)
+                  if (deletingCache)
                     const Padding(
                       padding: EdgeInsets.only(right: 16.0),
                       child: SizedBox.square(

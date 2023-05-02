@@ -8,13 +8,13 @@ import 'package:open_bookshelf/models/book.dart';
 import 'package:open_bookshelf/models/tag.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 
-//TODO: Documentation
+/// Show all registered [Tag] (and an 'add tag' button if 'showCreateTag' is True)
 class TagPickerWidget extends StatelessWidget {
   const TagPickerWidget({
-    required this.onSelect,
     required this.book,
-    super.key,
+    required this.onSelect,
     this.showCreateTag = true,
+    super.key,
   });
 
   final void Function(Tag selected) onSelect;
@@ -24,45 +24,54 @@ class TagPickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = ScrollController();
-
     final bookshelfProvider = context.watch<IBookshelfProvider>();
-    final tags = bookshelfProvider.tags.map((e) {
-      return ActionChip(
-        elevation: book.tags.contains(e) ? 10 : 0,
-        onPressed: () => onSelect(e),
-        label: Text(e.name),
-        avatar: Container(
-          decoration: BoxDecoration(shape: BoxShape.circle, color: e.color),
-        ),
-      );
-    }).toList();
 
-    if (showCreateTag) {
-      tags.add(ActionChip(
-        label: Text(t.labels.add),
-        avatar: const Icon(Icons.add),
-        onPressed: () => showDialog(
-          context: context,
-          builder: (context) => const _AddNewTag(),
-        ).then((value) {
-          // Response
-          if (value is Map<String, dynamic> &&
-              (value['label'] as String).isNotEmpty) {
-            // Create the tag
-            final tag = Tag(name: value['label'], color: value['color']);
+    // List of tags
+    final widgetTags = [
+      // Show create tag first
+      if (showCreateTag)
+        ActionChip(
+          label: Text(t.labels.add),
+          avatar: const Icon(Icons.add),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => const _AddNewTagDialog(),
+          ).then((value) {
+            // Response
+            if (value is Map<String, dynamic> &&
+                (value['label'] as String).isNotEmpty) {
+              // Create the tag
+              final tag = Tag(name: value['label'], color: value['color']);
 
-            // Check that it is unique
-            if (!bookshelfProvider.tags.contains(tag)) {
-              onSelect(tag);
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(t.labels.already_exists)),
-              );
+              // Check that it is unique
+              if (!bookshelfProvider.tags.contains(tag)) {
+                onSelect(tag);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(t.labels.already_exists)),
+                );
+              }
             }
-          }
-        }),
-      ));
-    }
+          }),
+        ),
+      // Show other tags sorted by hashCode
+      ...(context.read<IBookshelfProvider>().tags.toList()
+            ..sort(
+              (a, b) => a.hashCode - b.hashCode,
+            ))
+          // Map every tag to an ActionChip
+          .map((e) => ActionChip(
+                key: ObjectKey(e),
+                elevation: book.tags.contains(e) ? 10 : 0,
+                onPressed: () => onSelect(e),
+                label: Text(e.name),
+                avatar: Container(
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: e.color),
+                ),
+              ))
+          .toList(),
+    ];
 
     return Scrollbar(
       controller: scrollController,
@@ -72,9 +81,9 @@ class TagPickerWidget extends StatelessWidget {
         child: ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           scrollDirection: Axis.horizontal,
-          itemCount: tags.length,
+          itemCount: widgetTags.length,
           separatorBuilder: (context, index) => const SizedBox(width: 5.0),
-          itemBuilder: (context, index) => tags[index],
+          itemBuilder: (context, index) => widgetTags[index],
           shrinkWrap: true,
         ),
       ),
@@ -82,8 +91,8 @@ class TagPickerWidget extends StatelessWidget {
   }
 }
 
-class _AddNewTag extends StatelessWidget {
-  const _AddNewTag();
+class _AddNewTagDialog extends StatelessWidget {
+  const _AddNewTagDialog();
 
   @override
   Widget build(BuildContext context) {
