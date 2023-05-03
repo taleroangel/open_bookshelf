@@ -46,6 +46,8 @@ dependencies:
   # Icons and Splash
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.19
+  should_rebuild: ^1.0.1
+  fuzzywuzzy: ^0.2.0
 
 dev_dependencies:
   flutter_test:

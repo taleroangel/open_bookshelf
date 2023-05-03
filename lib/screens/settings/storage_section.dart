@@ -62,10 +62,10 @@ class _StorageSectionState extends State<StorageSection> {
       ),
     ).then((response) {
       if (response == true) {
-        context.read<IBookshelfProvider>().deleteDatabase();
+        context.read<IBookshelfProvider>().deleteDatabase().then((value) {
+          setState(() => (deletingDatabase = false));
+        });
       }
-    }).whenComplete(() {
-      setState(() => (deletingDatabase = false));
     });
   }
 
@@ -91,102 +91,101 @@ class _StorageSectionState extends State<StorageSection> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Ammount of books stored
-        Text(t.settings.local_storage
-            .books_stored(books: context.read<IBookshelfProvider>().length)),
-
-        // Size of the cache
-        FutureBuilder(
-          future: GetIt.I
-              .get<CacheStorageService>()
-              .sizeOf(CacheStorageSource.images),
-          builder: (context, snapshot) =>
-              Text(t.settings.local_storage.cover_cache_size(
-            size: snapshot.data?.toStringAsFixed(2) ?? "...",
+  Widget build(BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Ammount of books stored
+          Text(t.settings.local_storage.books_stored(
+            books: context.read<IBookshelfProvider>().length,
           )),
-        ),
 
-        // Size of the database
-        FutureBuilder(
-          future: context.read<IBookshelfProvider>().size,
-          builder: (context, snapshot) =>
-              Text(t.settings.local_storage.bookshelf_size(
-            size: snapshot.data?.toStringAsFixed(2) ?? "...",
-          )),
-        ),
+          // Size of the cache
+          FutureBuilder(
+            future: GetIt.I
+                .get<CacheStorageService>()
+                .sizeOf(CacheStorageSource.images),
+            builder: (context, snapshot) =>
+                Text(t.settings.local_storage.cover_cache_size(
+              size: snapshot.data?.toStringAsFixed(2) ?? "...",
+            )),
+          ),
 
-        const SizedBox(
-          height: 8.0,
-        ),
+          // Size of the database
+          FutureBuilder(
+            future: context.read<IBookshelfProvider>().size,
+            builder: (context, snapshot) =>
+                Text(t.settings.local_storage.bookshelf_size(
+              size: snapshot.data?.toStringAsFixed(2) ?? "...",
+            )),
+          ),
 
-        Column(
-          // Buttons
-          children: [
-            // Compact database button
-            TextButton(
-              onPressed: compactDatabase,
-              child: Row(
-                children: [
-                  if (compactingDatabase)
-                    const Padding(
-                      padding: EdgeInsets.only(right: 16.0),
-                      child: SizedBox.square(
-                        dimension: 16.0,
-                        child: CircularProgressIndicator(),
+          const SizedBox(
+            height: 8.0,
+          ),
+
+          Column(
+            // Buttons
+            children: [
+              // Compact database button
+              TextButton(
+                onPressed: compactDatabase,
+                child: Row(
+                  children: [
+                    if (compactingDatabase)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 16.0),
+                        child: SizedBox.square(
+                          dimension: 16.0,
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
-                    ),
-                  Text(t.settings.local_storage.compact_database.button),
-                ],
+                    Text(t.settings.local_storage.compact_database.button),
+                  ],
+                ),
               ),
-            ),
 
-            // Delete cover cache
-            TextButton(
-              onPressed: deleteCache,
-              child: Row(
-                children: [
-                  if (compactingDatabase)
-                    const Padding(
-                      padding: EdgeInsets.only(right: 16.0),
-                      child: SizedBox.square(
-                        dimension: 16.0,
-                        child: CircularProgressIndicator(),
+              // Delete cover cache
+              TextButton(
+                onPressed: deleteCache,
+                child: Row(
+                  children: [
+                    if (compactingDatabase)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 16.0),
+                        child: SizedBox.square(
+                          dimension: 16.0,
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
-                    ),
-                  Text(t.settings.local_storage.delete_cache.button),
-                ],
+                    Text(t.settings.local_storage.delete_cache.button),
+                  ],
+                ),
               ),
-            ),
 
-            // Button to delete the database
-            TextButton(
-              onPressed: deleteDatabase,
-              child: Row(
-                children: [
-                  if (deletingCache)
-                    const Padding(
-                      padding: EdgeInsets.only(right: 16.0),
-                      child: SizedBox.square(
-                        dimension: 16.0,
-                        child: CircularProgressIndicator(),
+              // Button to delete the database
+              TextButton(
+                onPressed: deleteDatabase,
+                child: Row(
+                  children: [
+                    if (deletingCache)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 16.0),
+                        child: SizedBox.square(
+                          dimension: 16.0,
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
+                    Text(
+                      t.settings.local_storage.delete_database.button,
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.error),
                     ),
-                  Text(
-                    t.settings.local_storage.delete_database.button,
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+            ],
+          ),
+        ],
+      );
 }

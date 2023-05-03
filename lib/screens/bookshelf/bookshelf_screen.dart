@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:open_bookshelf/screens/bookshelf/book_search_delegate.dart';
 
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,18 @@ class BookshelfScreen extends StatelessWidget {
     var filter = BookCollection.none;
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.navigation.bookshelf)),
+      appBar: AppBar(
+        title: Text(t.navigation.bookshelf),
+        actions: [
+          IconButton(
+            onPressed: () => showSearch(
+              context: context,
+              delegate: BookSearchDelegate(),
+            ),
+            icon: const Icon(Icons.search_rounded),
+          ),
+        ],
+      ),
       // Add book button
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(

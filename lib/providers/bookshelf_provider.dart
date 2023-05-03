@@ -77,4 +77,10 @@ extension TagExtensions on Set<Tag> {
 
     return copySet;
   }
+
+  /// Transform to [List] and sort
+  List<Tag> toSortedList() => toList()
+    ..sort(
+      (a, b) => a.hashCode - b.hashCode,
+    );
 }

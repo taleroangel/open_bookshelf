@@ -55,10 +55,10 @@ class TagPickerWidget extends StatelessWidget {
           }),
         ),
       // Show other tags sorted by hashCode
-      ...(context.read<IBookshelfProvider>().tags.toList()
-            ..sort(
-              (a, b) => a.hashCode - b.hashCode,
-            ))
+      ...context
+          .read<IBookshelfProvider>()
+          .tags
+          .toSortedList()
           // Map every tag to an ActionChip
           .map((e) => ActionChip(
                 key: ObjectKey(e),

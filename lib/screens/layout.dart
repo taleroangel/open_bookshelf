@@ -37,7 +37,7 @@ class _LayoutState extends State<Layout> {
 
   @override
   Widget build(BuildContext context) {
-    final sideviewProvider = context.read<SideviewProvider>();
+    final sideviewProvider = context.watch<SideviewProvider>();
 
     return AdaptiveScaffold(
       // Depending on screen size 'largeSecondaryBody' will either
@@ -80,7 +80,7 @@ class _LayoutState extends State<Layout> {
         // BookshelfProvider must forget the currently selected book,
         // this is because deleting the database  or the images in caches may
         // alter this data while in use
-        if (Destinations.routes.elementAt(currentPageIndex).route
+        if (Destinations.routes.elementAt(selectedIndex).route
             is! BookshelfScreen) {
           context.read<IBookshelfProvider>().selectedBook = null;
         }

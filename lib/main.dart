@@ -10,6 +10,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:logger/logger.dart';
+import 'package:open_bookshelf/services/book/internet_book_service.dart';
+import 'package:open_bookshelf/services/book_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -63,6 +65,7 @@ void main() async {
     // Global dependencies
     GetIt.I.registerSingletonAsync(CacheStorageService.getInstance);
     GetIt.I.registerSingleton<ICoverService>(SystemCoverService());
+    GetIt.I.registerSingleton<IBookService>(InternetBookService());
 
     //* Get all dependencies ready
     await GetIt.I.allReady();

@@ -11,12 +11,12 @@ class TagsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get bookshelf provider
-    final provider = context.watch<IBookshelfProvider>();
+    // Get tags from provider
+    final tags = context.watch<IBookshelfProvider>().tags.toSortedList();
 
     return Scaffold(
       appBar: AppBar(title: Text(t.navigation.labels)),
-      body: provider.tags.isEmpty
+      body: tags.isEmpty
           ? Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,11 +42,11 @@ class TagsScreen extends StatelessWidget {
               ),
             )
           : ListView.builder(
-              itemCount: provider.tags.length,
+              itemCount: tags.length,
               itemBuilder: (context, index) => TagExpandable(
-                key: ObjectKey(provider.tags.elementAt(index)),
+                key: ObjectKey(tags.elementAt(index)),
                 initExpanded: index == 0,
-                tag: provider.tags.elementAt(index),
+                tag: tags.elementAt(index),
               ),
             ),
     );

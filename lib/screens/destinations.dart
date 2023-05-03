@@ -33,6 +33,10 @@ class Destinations {
       route: const SettingsScreen(),
     ),
   ];
+
+  @override
+  String toString() =>
+      "$runtimeType: {label: $label, routeType: ${route.runtimeType}}";
 }
 
 extension DestinationExtension on Iterable<Destinations> {

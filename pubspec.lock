@@ -397,6 +397,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
+  fuzzywuzzy:
+    dependency: "direct main"
+    description:
+      name: fuzzywuzzy
+      sha256: f685751951297e560361b6416d9ba62d40231599d7b3e8c078318990d3bab84a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   get_it:
     dependency: "direct main"
     description:
@@ -829,6 +837,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  should_rebuild:
+    dependency: "direct main"
+    description:
+      name: should_rebuild
+      sha256: "33b49e41c9053ac4e07a1bad7cde32c08cb39aeab07db462684ab1061c63b9a6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   sky_engine:
     dependency: transitive
     description: flutter
