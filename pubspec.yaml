@@ -3,8 +3,9 @@ description: Digital bookshelf application that utilizes the OpenLibrary API to 
 version: 1.0.0+1
 publish_to: "none"
 
+# Use Dart 3.0
 environment:
-  sdk: ">=2.19.3 <3.0.0"
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -18,12 +19,15 @@ dependencies:
   http: ^0.13.5
   url_launcher: ^6.1.10
   path_provider: ^2.0.13
+  file_picker: ^5.2.10
+  mobile_scanner: ^3.2.0
+  fuzzywuzzy: ^1.1.6
 
   # State management
   get_it: ^7.2.0
   provider: ^6.0.5
   shared_preferences: ^2.0.18
-
+  
   # Database
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -38,16 +42,17 @@ dependencies:
   dynamic_color: ^1.6.2
   flutter_adaptive_scaffold: ^0.1.0
   flutter_colorpicker: ^1.0.3
+
+  # Widgets
+  should_rebuild: ^1.0.1
   barcode_widget: ^2.0.3
-  file_picker: ^5.2.10
-  mobile_scanner: ^3.2.0
   expandable: ^5.0.1
   
   # Icons and Splash
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.19
-  should_rebuild: ^1.0.1
-  fuzzywuzzy: ^0.2.0
+  share_plus: ^7.0.2
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:

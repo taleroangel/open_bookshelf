@@ -9,7 +9,8 @@
 	"submenu": {
 		"barcode_item": "ISBN Barcode",
 		"visit_on_openlibrary": "Visit on OpenLibrary",
-		"contribute_on_openlibrary": "Contribute to OpenLibrary"
+		"contribute_on_openlibrary": "Contribute to OpenLibrary",
+		"share": "Share URL"
 	},
 	"barcode": {
 		"title": "ISBN Barcode Preview",

@@ -5,10 +5,10 @@
 - [X] Fetch book cover and store it in cache
 - [X] Allow book to belong to a collection
 - [X] Filter books by collection
-- [ ] Copy book name by clicking it
+- [X] Copy book name by clicking it
 - [X] Book search by name
 - [ ] Show authors and publishers
-- [ ] Share book url on OpenLibrary
+- [X] Share book url on OpenLibrary
 - [X] Append multiple tags to books
 - [X] Filter books by tags
 - [X] Show ISBN barcode
@@ -16,6 +16,7 @@
 - [X] Barcode ISBN automatic scanner in mobile devices
 - [ ] Allow inserting books not present in OpenLibrary
 - [ ] Book cover scanner
+- [ ] Store custom book covers in gallery
 - [ ] Allow custom covers
 - [ ] Allow Database deletion
 - [ ] Import database from JSON with file picker
@@ -25,3 +26,4 @@
 - [ ] Add loading splash screen
 - [X] Add missing cover asset
 - [ ] Cloud sync with Firebase
+- [ ] Stop unnecessary cover rebuilds

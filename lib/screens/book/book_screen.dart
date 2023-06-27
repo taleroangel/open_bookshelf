@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:open_bookshelf/i18n/translations.g.dart';
@@ -32,7 +33,6 @@ class BookScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Read the context
     final bookshelfProvider = context.watch<IBookshelfProvider>();
-
     // Book currently selected, either provided via parameter or present in database
     Book? book = useThisBookInstead ?? bookshelfProvider.selectedBook;
 
@@ -47,6 +47,7 @@ class BookScreen extends StatelessWidget {
               ),
             ),
           )
+
         // Book details
         : Scaffold(
             appBar: AppBar(
@@ -60,7 +61,7 @@ class BookScreen extends StatelessWidget {
             ),
             floatingActionButton: floatingActionButton,
             body: Padding(
-              padding: const EdgeInsets.only(bottom: 18.0),
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
@@ -86,46 +87,68 @@ class BookScreen extends StatelessWidget {
 
                   // Show Cover
                   Expanded(
-                    flex: 6,
+                    flex: 2,
                     child: BookCoverWidget(
                       useThisBookInstead: useThisBookInstead,
                     ),
                   ),
 
+                  // Show Title and Subtitle
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.only(top: 16.0),
                     child: Column(
                       children: [
-                        // Show title
-                        Text(
-                          book!.title,
-                          style: Theme.of(context).textTheme.titleLarge,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
+                        // Book title (Copy on tap)
+                        GestureDetector(
+                          onTap: () => Clipboard.setData(
+                            ClipboardData(text: book!.title),
+                          ).then((value) => ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                  t.general.misc.copied_clipboard,
+                                ),
+                              ))),
+                          child: // Show title
+                              Text(
+                            book!.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(height: 0.0),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                          ),
                         ),
 
+                        // Show subtitle
                         if (book!.subtitle != null)
                           Text(
                             "\n${book!.subtitle}",
-                            style: Theme.of(context).textTheme.titleMedium,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(height: 0.0),
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 3,
                           ),
 
+                        // Not present in OpenLibrary notice
                         if (book!.url == null)
                           Text(
                             "\n${t.book.not_in_openlibrary}",
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
+                              height: 0.0,
                             ),
                           ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 16.0),
+                  // Spacing between titles and isbn
+                  const SizedBox(height: 12.0),
 
                   // Show ISBN
                   GestureDetector(
@@ -200,6 +223,8 @@ class BookScreen extends StatelessWidget {
   }
 }
 
+enum PopupItemsEnum { share, contribute, barcode, openLibrary }
+
 /// Popup menu for context actions
 class _PopupMenu extends StatelessWidget {
   const _PopupMenu(this.book);
@@ -207,22 +232,29 @@ class _PopupMenu extends StatelessWidget {
   final Book book;
 
   @override
-  Widget build(BuildContext context) => PopupMenuButton<int>(
+  Widget build(BuildContext context) => PopupMenuButton<PopupItemsEnum>(
         onSelected: (value) {
           switch (value) {
-            case -1:
+            /// Share an URL
+            case PopupItemsEnum.share:
+              Share.share(book.url!, subject: "From OpenBookshelf");
+
+            /// Open a contribution dialog
+            case PopupItemsEnum.contribute:
               showDialog(
                 context: context,
                 builder: (context) => const ContributeAlertDialog(),
               );
-              break;
-            case 0:
+
+            /// Show the book ISBN in Barcode
+            case PopupItemsEnum.barcode:
               showDialog(
                 context: context,
                 builder: (context) => BarcodePreviewDialog(book.isbn),
               );
-              break;
-            case 1:
+
+            /// Open book URL on OpenLibrary
+            case PopupItemsEnum.openLibrary:
               launchUrl(
                 mode: LaunchMode.externalApplication,
                 Uri.parse(book.url!),
@@ -237,7 +269,7 @@ class _PopupMenu extends StatelessWidget {
         },
         itemBuilder: (context) => [
           PopupMenuItem(
-            value: 0,
+            value: PopupItemsEnum.barcode,
             child: Row(children: [
               const Padding(
                 padding: EdgeInsets.only(right: 12.0),
@@ -248,7 +280,7 @@ class _PopupMenu extends StatelessWidget {
           ),
           PopupMenuItem(
             enabled: book.url != null,
-            value: 1,
+            value: PopupItemsEnum.openLibrary,
             child: Row(children: [
               const Padding(
                 padding: EdgeInsets.only(right: 12.0),
@@ -259,7 +291,7 @@ class _PopupMenu extends StatelessWidget {
           ),
           if (book.url == null)
             PopupMenuItem(
-              value: -1,
+              value: PopupItemsEnum.contribute,
               child: Row(children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 12.0),
@@ -273,6 +305,17 @@ class _PopupMenu extends StatelessWidget {
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
+              ]),
+            ),
+          if (book.url != null)
+            PopupMenuItem(
+              value: PopupItemsEnum.share,
+              child: Row(children: [
+                const Padding(
+                  padding: EdgeInsets.only(right: 12.0),
+                  child: Icon(Icons.share_rounded),
+                ),
+                Text(t.book.submenu.share),
               ]),
             ),
         ],

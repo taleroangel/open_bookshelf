@@ -1,38 +1,84 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:open_bookshelf/exceptions/database_exception.dart';
-
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-
 import 'package:file_picker/file_picker.dart';
-
-import 'dart:io';
+import 'package:path/path.dart' as path;
 
 /// Export or Import database Settings
 class DatabaseSection extends StatelessWidget {
   const DatabaseSection({super.key});
 
-  void export(BuildContext context) {
+  void export(BuildContext context) async {
+    // Scaffold messenger
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final contextTheme = Theme.of(context);
+
+    // Try to export database
     try {
       // Export document to JSON
-      final exportedJson =
+      final databaseJsonContent =
           context.read<IBookshelfProvider>().export<Map<String, Object?>>();
 
-      // TODO: Generate file and share it
+      // Store the file path
+      String storePath;
+
+      // Open a file picker and choose where to store the file on computer platforms
+      if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+        // Ask for the location of the file
+        storePath = (await FilePicker.platform
+            .saveFile(type: FileType.custom, allowedExtensions: [".json"]))!;
+        // Normalize with heck if file contains extension and add it
+        storePath = path.normalize(path.extension(storePath) == '.json'
+            ? storePath
+            : '$storePath.json');
+      } else {
+        // Get the basename
+        final basename =
+            '${DateFormat('dd_MM_yyyy').format(DateTime.now())}_openbookshelf';
+        // Make the path
+        storePath = path.join(
+          (await (Platform.isAndroid
+                  ? getExternalStorageDirectory()
+                  : getDownloadsDirectory()))!
+              .path,
+          '$basename.json',
+        );
+      }
+
+      // Show the filename
+      GetIt.I.get<Logger>().v('Selected file was: $storePath');
+
+      // Create the file and store contents
+      final file = await File(storePath).create();
+      await file.writeAsString(json.encode(databaseJsonContent));
+
+      // Show creation
+      GetIt.I.get<Logger>().i("Database storage file stored as: ${file.path}");
+
+      // Show a Success snackbar
+      scaffoldMessenger.showSnackBar(SnackBar(
+        content: Text(
+          t.settings.export_import.export.success(path: file.path),
+        ),
+      ));
     } catch (e) {
       // Show error message
       GetIt.I.get<Logger>().e(e);
       // Show a failure snackbar
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      scaffoldMessenger.showSnackBar(SnackBar(
         content: Text(
           t.settings.export_import.export.failed,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.onError,
+            color: contextTheme.colorScheme.onError,
           ),
         ),
       ));
