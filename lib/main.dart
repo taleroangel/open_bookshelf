@@ -53,7 +53,7 @@ void main() async {
     // Logger
     GetIt.I.registerSingleton(Logger(
       printer: kDebugMode ? PrettyPrinter() : SimplePrinter(printTime: true),
-      level: kDebugMode ? Level.verbose : Level.warning,
+      level: kDebugMode ? Level.all : Level.warning,
     ));
 
     //* Register dependencies
@@ -82,7 +82,6 @@ void main() async {
         providers: [
           // Adaptive layout sideview
           ChangeNotifierProvider(create: (_) => SideviewProvider()),
-
           // Bookshelf providers
           ChangeNotifierProvider<IBookshelfProvider>(
             create: (_) => HiveBookshelfProvider(),
@@ -93,9 +92,7 @@ void main() async {
     ));
   } on Exception catch (e) {
     // Uncatched error
-    GetIt.I
-        .get<Logger>()
-        .wtf("Unhandled exception in main application isolate");
+    GetIt.I.get<Logger>().f("Unhandled exception in main application isolate");
     // Show error and run error app
     GetIt.I.get<Logger>().e(e.toString());
 

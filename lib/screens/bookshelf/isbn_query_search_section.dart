@@ -46,7 +46,7 @@ class _ISBNQuerySearchSectionState extends State<ISBNQuerySearchSection> {
   void onClickAddBook(Book value) {
     // Add book to collection
     context.read<IBookshelfProvider>()[value.isbn] = value;
-    GetIt.I.get<Logger>().v("Added book with ISBN: ${value.isbn}");
+    GetIt.I.get<Logger>().t("Added book with ISBN: ${value.isbn}");
     // Exit to main screen
     Navigator.of(context).popUntil((route) => route.isFirst);
   }

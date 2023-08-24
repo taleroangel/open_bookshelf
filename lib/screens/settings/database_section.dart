@@ -12,11 +12,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:share_plus/share_plus.dart';
 
 /// Export or Import database Settings
 class DatabaseSection extends StatelessWidget {
   const DatabaseSection({super.key});
 
+  /// Export the database into a .json file selected by the user
   void export(BuildContext context) async {
     // Scaffold messenger
     final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -55,7 +57,7 @@ class DatabaseSection extends StatelessWidget {
       }
 
       // Show the filename
-      GetIt.I.get<Logger>().v('Selected file was: $storePath');
+      GetIt.I.get<Logger>().t('Selected file was: $storePath');
 
       // Create the file and store contents
       final file = await File(storePath).create();
@@ -70,6 +72,14 @@ class DatabaseSection extends StatelessWidget {
           t.settings.export_import.export.success(path: file.path),
         ),
       ));
+
+      // Share prompt on phones
+      if (Platform.isAndroid || Platform.isIOS) {
+        Share.shareXFiles(
+          [XFile(file.path)],
+          subject: "My collection from OpenBookshelf",
+        );
+      }
     } catch (e) {
       // Show error message
       GetIt.I.get<Logger>().e(e);
@@ -85,6 +95,7 @@ class DatabaseSection extends StatelessWidget {
     }
   }
 
+  /// Import a .json file into local database
   void import(BuildContext context) {
     //File picker
     FilePicker.platform.pickFiles(
@@ -118,6 +129,7 @@ class DatabaseSection extends StatelessWidget {
     }).catchError((e) {
       // Show error
       GetIt.I.get<Logger>().e(e);
+
       // Show error snackbar
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Theme.of(context).colorScheme.error,

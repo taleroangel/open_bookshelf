@@ -11,7 +11,7 @@ class SideviewProvider extends ChangeNotifier {
   /// Called by [SideviewWidget] on creation to indicate that a sideview
   /// is available for usage
   void sideviewEnable() {
-    GetIt.I.get<Logger>().v("Sideview was enabled");
+    GetIt.I.get<Logger>().t("Sideview was enabled");
     _sideviewAvailable = true;
     notifyListeners();
   }
@@ -19,7 +19,7 @@ class SideviewProvider extends ChangeNotifier {
   /// Called by [SideviewWidget] on disposal to indicate that a sideview
   /// is not longer available
   void sideviewDisable() {
-    GetIt.I.get<Logger>().v("Sideview was disabled");
+    GetIt.I.get<Logger>().t("Sideview was disabled");
     _sideviewAvailable = false;
     notifyListeners();
   }

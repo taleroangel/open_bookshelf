@@ -20,7 +20,7 @@
 - [ ] Allow custom covers
 - [ ] Allow Database deletion
 - [ ] Import database from JSON with file picker
-- [ ] Export database JSON as a share prompt
+- [X] Export database JSON as a share prompt
 - [ ] Add a reload/sync with OpenLibrary option
 - [X] Add icon and art
 - [ ] Add loading splash screen

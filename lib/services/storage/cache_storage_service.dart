@@ -126,7 +126,7 @@ class CacheStorageService implements IStorageService {
   ) async {
     // Path to file
     final path = "${await storageSource.path}/$resource";
-    GetIt.I.get<Logger>().v("$runtimeType: Storing '$path' in cache");
+    GetIt.I.get<Logger>().t("$runtimeType: Storing '$path' in cache");
 
     // Create file
     final file = File(path);

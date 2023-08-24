@@ -22,7 +22,7 @@ class HiveBookshelfProvider extends ChangeNotifier
 
   /// Open the database, Hive [Book] box must be already opened
   HiveBookshelfProvider() : _database = Hive.box<Book>(boxName) {
-    GetIt.I.get<Logger>().v("$runtimeType: Database provider initialized");
+    GetIt.I.get<Logger>().t("$runtimeType: Database provider initialized");
   }
 
   Book? _selectedBook;
