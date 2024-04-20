@@ -41,7 +41,7 @@
 	"about": {
 		"title": "About",
 		"subtitle": "Credits and Software licence",
-		"credits": "OpenBookshelf by Angel Talero © 2023",
+		"credits": "OpenBookshelf by Angel Talero © 2024",
 		"license": "Open Source software (MIT license)",
 		"flutter": "Powered by {} Flutter",
 		"openlibrary": "Thanks to OpenLibrary for providing the API",

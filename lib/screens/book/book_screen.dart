@@ -233,39 +233,33 @@ class _PopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PopupMenuButton<PopupItemsEnum>(
-        onSelected: (value) {
-          switch (value) {
-            /// Share an URL
-            case PopupItemsEnum.share:
-              Share.share(book.url!, subject: "From OpenBookshelf");
+        onSelected: (value) => switch (value) {
+          /// Share an URL
+          PopupItemsEnum.share =>
+            Share.share(book.url!, subject: "From OpenBookshelf"),
 
-            /// Open a contribution dialog
-            case PopupItemsEnum.contribute:
-              showDialog(
-                context: context,
-                builder: (context) => const ContributeAlertDialog(),
+          /// Open a contribution dialog
+          PopupItemsEnum.contribute => showDialog(
+              context: context,
+              builder: (context) => const ContributeAlertDialog(),
+            ),
+
+          /// Show the book ISBN in Barcode
+          PopupItemsEnum.barcode => showDialog(
+              context: context,
+              builder: (context) => BarcodePreviewDialog(book.isbn),
+            ),
+
+          /// Open book URL on OpenLibrary
+          PopupItemsEnum.openLibrary => launchUrl(
+              mode: LaunchMode.externalApplication,
+              Uri.parse(book.url!),
+            ).onError((error, stackTrace) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("URL: ${book.url}\nError:$error")),
               );
-
-            /// Show the book ISBN in Barcode
-            case PopupItemsEnum.barcode:
-              showDialog(
-                context: context,
-                builder: (context) => BarcodePreviewDialog(book.isbn),
-              );
-
-            /// Open book URL on OpenLibrary
-            case PopupItemsEnum.openLibrary:
-              launchUrl(
-                mode: LaunchMode.externalApplication,
-                Uri.parse(book.url!),
-              ).onError((error, stackTrace) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("URL: ${book.url}\nError:$error")),
-                );
-
-                return true;
-              });
-          }
+              return true;
+            }),
         },
         itemBuilder: (context) => [
           PopupMenuItem(

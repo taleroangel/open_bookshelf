@@ -1,10 +1,13 @@
 name: open_bookshelf
 description: Digital bookshelf application that utilizes the OpenLibrary API to help users manage their reading lists.
-version: 1.0.0+1
+version: 1.0.0
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.5 <4.0.0"
+  sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
   flutter:
@@ -13,61 +16,72 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # Tools
-  logger: ^2.0.1
-  http: ^1.1.0
-  url_launcher: ^6.1.10
-  path_provider: ^2.0.13
-  file_picker: ^5.2.10
-  mobile_scanner: ^3.2.0
-  fuzzywuzzy: ^1.1.6
-
-  # State management
+  # Dependency injection
   get_it: ^7.2.0
+  # Advanced state management
   provider: ^6.0.5
-  shared_preferences: ^2.0.18
-
-  # Database
+  # Structured and pretty printing capable logging
+  logger: ^2.0.1
+  # Communicating with the OpenLibrary API endpoint via HTTP
+  http: ^1.1.0
+  # Internal bookshelf database
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-
-  # Code generation
+  # internationalization (i18n)
   slang: ^3.13.0
   slang_flutter: ^3.13.0
-  freezed_annotation: ^2.2.0
-  json_annotation: ^4.8.0
-
-  # Theme and layout
-  dynamic_color: ^1.6.2
-  flutter_colorpicker: ^1.0.3
-  flutter_adaptive_scaffold: ^0.1.7
-
-  # Widgets
-  should_rebuild: ^1.0.1
-  barcode_widget: ^2.0.3
-  expandable: ^5.0.1
-
-  # Icons and Splash
-  flutter_launcher_icons: ^0.13.1
-  flutter_native_splash: ^2.2.19
-  share_plus: ^7.0.2
-  path: ^1.8.3
+  # Get the device language
   intl: ^0.18.0
+  # About page and OpenLibrary links
+  url_launcher: ^6.1.10
+  # Scanning barcodes for ISBN in books
+  mobile_scanner: ^4.0.1
+  # Join directories with OS specific separator
+  path: ^1.8.3
+  # Get device specific storage directories
+  path_provider: ^2.0.13
+  # Database (json) file picking
+  file_picker: ^8.0.1
+  # Search bar name matching
+  fuzzywuzzy: ^1.1.6
+  # Freezed annotations for code generation
+  freezed_annotation: ^2.2.0
+  # JSON annotations for JSON generation
+  json_annotation: ^4.8.0
+  # Dynamic theme and layout in devices that support it
+  dynamic_color: ^1.6.2
+  # Tags color picker
+  flutter_colorpicker: ^1.0.3
+  # Adaptive scaffold depending on device
+  flutter_adaptive_scaffold: ^0.1.7
+  # Show the ISBN barcode for the book
+  barcode_widget: ^2.0.3
+  # Tag expandable region
+  expandable: ^5.0.1
+  # Share book
+  share_plus: ^8.0.3
+  # initial splash screen generation
+  flutter_native_splash: ^2.2.19
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # Linting
-  analyzer: ^5.13.0
-  flutter_lints: ^2.0.0
-
+  flutter_lints: ^3.0.2
+  # Advanced static analysis
+  analyzer: ^6.4.1
+  # applications icons generation
+  flutter_launcher_icons: ^0.13.1
   # Code generation
   build_runner: ^2.4.5
-  freezed: ^2.3.5
-  json_serializable: ^6.6.1
+  # Auto-generate translations
   slang_build_runner: ^3.13.0
+  # ORM code generation
   hive_generator: ^2.0.0
+  # Immutable and value classes
+  freezed: ^2.3.5
+  # Serialize classes into JSON
+  json_serializable: ^6.6.1
 
 flutter:
   uses-material-design: true

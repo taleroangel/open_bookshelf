@@ -4,23 +4,23 @@ Digital bookshelf application that utilizes the OpenLibrary API to help users ma
 ## 🛠️ Code Generation
 Run the following commands in separate terminals and leave them running while coding so code generations happen when files change:
 
-	flutter pub run slang watch
-	flutter pub run build_runner watch
+	dart run slang watch
+	dart run build_runner watch
 
 ## 🏗️ Compilation
 
 __'flutter_native_splash'__ and __'flutter_launcher_icons'__ require building before running the application, use the following commands:
 
 ```sh
-flutter pub get
-flutter pub run flutter_native_splash:create
-flutter pub run flutter_launcher_icons
+dart pub get
+dart run flutter_native_splash:create
+dart run flutter_launcher_icons
 ```
 
 __slang__ and __freezed__ packages require code generation before building the application, use the following commands:
 ```sh
-flutter pub run slang build
-flutter pub run build_runner build
+dart run slang build
+dart run build_runner build
 ```
 
 ### Release Build
