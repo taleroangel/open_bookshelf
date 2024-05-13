@@ -15,5 +15,13 @@
 	},
 	"preview": {
 		"add_book": "Add this book"
+	},
+	"fields": {
+		"title": "Book Title",
+		"subtitle": "Book Subtitle",
+		"isbn": "ISBN",
+		"authors": "Authors",
+		"publishers": "Publishers",
+		"subjects": "Subjects"
 	}
 }

@@ -62,6 +62,8 @@ dependencies:
   share_plus: ^8.0.3
   # initial splash screen generation
   flutter_native_splash: ^2.2.19
+  # QoL flutter extension
+  awesome_flutter_extensions: ^1.2.0
 
 dev_dependencies:
   flutter_test:

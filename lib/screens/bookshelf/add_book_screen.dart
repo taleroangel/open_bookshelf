@@ -4,6 +4,7 @@ import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/screens/bookshelf/isbn_query_search_section.dart';
+import 'package:open_bookshelf/screens/bookshelf/manual_add_book_section.dart';
 import 'package:open_bookshelf/widgets/description_card_widget.dart';
 
 class AddBookScreen extends StatelessWidget {
@@ -31,7 +32,7 @@ class AddBookScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         title: t.addbook.manual.title,
         subtitle: t.addbook.manual.subtitle,
-        child: const Placeholder(),
+        child: const ManualAddBookSection(),
       ),
     ];
 
