@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:open_bookshelf/constants/open_library_endpoints.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 /// Show a 'contribute on OpenBookshelf' [AlertDialog]
 class ContributeAlertDialog extends StatelessWidget {
@@ -20,7 +21,7 @@ class ContributeAlertDialog extends StatelessWidget {
           children: [
             Text(
               t.book.contribute.summary,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: context.textStyles.bodyLarge,
             ),
             const SizedBox(
               height: 8.0,
@@ -57,8 +58,8 @@ class ContributeAlertDialog extends StatelessWidget {
           icon: const Icon(Icons.favorite),
           label: Text(t.book.contribute.contribute),
           style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: context.colors.scheme.onPrimary,
+            backgroundColor: context.colors.scheme.primary,
           ),
         ),
       ],

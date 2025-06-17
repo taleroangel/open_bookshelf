@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 /// Material [Card] with a [Text] title and subtitle
 class DescriptionCardWidget extends StatelessWidget {
@@ -34,11 +35,11 @@ class DescriptionCardWidget extends StatelessWidget {
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: context.textStyles.headlineSmall,
             ),
             Text(
               subtitle,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: context.textStyles.bodyLarge,
             ),
             Divider(
               height: dividerHeight,

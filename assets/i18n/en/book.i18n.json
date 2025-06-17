@@ -23,5 +23,14 @@
 		"why_contribute": "By contributing to OpenLibrary, you can help preserve the world's knowledge and cultural heritage for future generations, making it accessible to everyone regardless of their location or financial resources.",
 		"skip": "Maybe later",
 		"contribute": "How to contribute?"
+	},
+	"fields": {
+		"required": "Required fields",
+		"title": "Title",
+		"subtitle": "Subtitle",
+		"authors": "Authors",
+		"publishers": "Publishers",
+		"subjects": "Subjects",
+		"cover": "Cover"
 	}
 }

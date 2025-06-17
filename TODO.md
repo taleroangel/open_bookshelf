@@ -7,7 +7,7 @@
 - [X] Filter books by collection
 - [X] Copy book name by clicking it
 - [X] Book search by name
-- [ ] Show authors and publishers
+- [X] Show authors and publishers
 - [X] Share book url on OpenLibrary
 - [X] Append multiple tags to books
 - [X] Filter books by tags
@@ -18,8 +18,8 @@
 - [ ] Book cover scanner
 - [ ] Store custom book covers in gallery
 - [ ] Allow custom covers
-- [ ] Allow Database deletion
-- [ ] Import database from JSON with file picker
+- [X] Allow Database deletion
+- [X] Import database from JSON with file picker
 - [X] Export database JSON as a share prompt
 - [ ] Add a reload/sync with OpenLibrary option
 - [X] Add icon and art

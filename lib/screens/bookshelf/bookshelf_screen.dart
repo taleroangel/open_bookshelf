@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:open_bookshelf/screens/bookshelf/book_search_delegate.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 import 'package:provider/provider.dart';
 
@@ -99,7 +100,7 @@ class BookshelfScreen extends StatelessWidget {
                                 ),
                                 Text(
                                   t.bookshelf.no_books,
-                                  style: Theme.of(context).textTheme.bodyLarge,
+                                  style: context.textStyles.bodyLarge,
                                   textAlign: TextAlign.center,
                                 ),
                               ],

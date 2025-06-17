@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 /// Export or Import database Settings
 class DatabaseSection extends StatelessWidget {
@@ -120,10 +121,10 @@ class DatabaseSection extends StatelessWidget {
 
       // Show success
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: context.colors.scheme.onPrimary,
         content: Text(
           t.settings.export_import.import.success,
-          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          style: TextStyle(color: context.colors.scheme.primary),
         ),
       ));
     }).catchError((e) {
@@ -132,10 +133,10 @@ class DatabaseSection extends StatelessWidget {
 
       // Show error snackbar
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Theme.of(context).colorScheme.error,
+        backgroundColor: context.colors.scheme.error,
         content: Text(
           t.settings.export_import.import.failed,
-          style: TextStyle(color: Theme.of(context).colorScheme.onError),
+          style: TextStyle(color: context.colors.scheme.onError),
         ),
       ));
     });

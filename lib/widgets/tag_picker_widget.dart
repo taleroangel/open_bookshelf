@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
@@ -98,7 +99,7 @@ class _AddNewTagDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     // Variables
     var label = "";
-    var color = Theme.of(context).colorScheme.primary;
+    var color = context.colors.scheme.primary;
 
     return AlertDialog(
       title: Text(t.labels.add),

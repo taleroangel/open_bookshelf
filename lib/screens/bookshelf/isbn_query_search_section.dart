@@ -7,6 +7,7 @@ import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/models/book.dart';
@@ -51,6 +52,60 @@ class _ISBNQuerySearchSectionState extends State<ISBNQuerySearchSection> {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
+  void showBookNotFound() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text(
+            t.addbook.openlibrary.not_found,
+            style: context.textStyles.bodyLarge,
+          ),
+          actions: [
+            TextButton(
+              onPressed: Navigator.of(context).pop,
+              child: Text(t.general.button.ok),
+            ),
+          ],
+        ),
+      );
+
+  void showBookFound(Book value) {
+    // Found book
+    GetIt.I.get<Logger>().i("Found book: ${value.title}");
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => BookScreen(
+        useThisBookInstead: value,
+        // Show a FAB to add the Book to the library, this button is
+        // extended when a large layout is detected
+        floatingActionButton: SlotLayout(
+          config: <Breakpoint, SlotLayoutConfig>{
+            Breakpoints.smallAndUp: SlotLayout.from(
+              key: const Key('small_body'),
+              builder: (_) => FloatingActionButton(
+                child: const Icon(Icons.add_circle_rounded),
+                onPressed: () => onClickAddBook(value),
+              ),
+            ),
+            Breakpoints.large: SlotLayout.from(
+              key: const Key('large_body'),
+              builder: (_) => FloatingActionButton.extended(
+                label: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(t.addbook.preview.add_book),
+                    ),
+                    const Icon(Icons.add_circle_rounded),
+                  ],
+                ),
+                onPressed: () => onClickAddBook(value),
+              ),
+            ),
+          },
+        ),
+      ),
+    ));
+  }
+
   /// Search book on OpenLibrary and show a [BookScreen] with the book to be
   /// added with a FAB to add them using [onClickAddBook]
   void searchBook() async {
@@ -68,57 +123,9 @@ class _ISBNQuerySearchSectionState extends State<ISBNQuerySearchSection> {
     // Book api service
     GetIt.I.get<IBookService>().fetchBook(isbn).then((Book? value) {
       if (value == null) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: Text(
-              t.addbook.openlibrary.not_found,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            actions: [
-              TextButton(
-                onPressed: Navigator.of(context).pop,
-                child: Text(t.general.button.ok),
-              ),
-            ],
-          ),
-        );
+        showBookNotFound();
       } else {
-        // Found book
-        GetIt.I.get<Logger>().i("Found book: ${value.title}");
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => BookScreen(
-            useThisBookInstead: value,
-            // Show a FAB to add the Book to the library, this button is
-            // extended when a large layout is detected
-            floatingActionButton: SlotLayout(
-              config: <Breakpoint, SlotLayoutConfig>{
-                Breakpoints.smallAndUp: SlotLayout.from(
-                  key: const Key('small_body'),
-                  builder: (_) => FloatingActionButton(
-                    child: const Icon(Icons.add_circle_rounded),
-                    onPressed: () => onClickAddBook(value),
-                  ),
-                ),
-                Breakpoints.large: SlotLayout.from(
-                  key: const Key('large_body'),
-                  builder: (_) => FloatingActionButton.extended(
-                    label: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(t.addbook.preview.add_book),
-                        ),
-                        const Icon(Icons.add_circle_rounded),
-                      ],
-                    ),
-                    onPressed: () => onClickAddBook(value),
-                  ),
-                ),
-              },
-            ),
-          ),
-        ));
+        showBookFound(value);
       }
     }).onError((error, stackTrace) {
       ScaffoldMessenger.of(context)
@@ -159,7 +166,7 @@ class _ISBNQuerySearchSectionState extends State<ISBNQuerySearchSection> {
             padding: const EdgeInsets.all(32.0),
             data: isbn,
             barcode: isValidISBN ? Barcode.isbn() : Barcode.code128(),
-            color: Theme.of(context).colorScheme.onSurface,
+            color: context.colors.scheme.onSurface,
           ),
           const SizedBox(height: 16.0),
           // Form to input the value
@@ -175,8 +182,8 @@ class _ISBNQuerySearchSectionState extends State<ISBNQuerySearchSection> {
           // Add book button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: context.colors.scheme.primary,
+              foregroundColor: context.colors.scheme.onPrimary,
             ),
             onPressed: isValidISBN
                 // Search book if ISBN is valid
@@ -200,7 +207,7 @@ class _ISBNQuerySearchSectionState extends State<ISBNQuerySearchSection> {
                     child: SizedBox.square(
                       dimension: 16.0,
                       child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: context.colors.scheme.onPrimary,
                       ),
                     ),
                   ),

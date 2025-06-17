@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 /// Show an [Icon] followed by a [Text]
 class TextWithIconWidget extends StatelessWidget {
@@ -19,7 +20,7 @@ class TextWithIconWidget extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 16.0),
-          child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+          child: Icon(icon, color: context.colors.scheme.primary),
         ),
         Flexible(
           child: Text(

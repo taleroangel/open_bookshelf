@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 /// Button to delete current selected book in [IBookshelfProvider]
 class DeleteBookButton extends StatelessWidget {
@@ -30,7 +31,7 @@ class DeleteBookButton extends StatelessWidget {
                 child: Text(
                   t.general.button.delete,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
+                    color: context.colors.scheme.error,
                   ),
                 ),
               ),
@@ -58,7 +59,7 @@ class DeleteBookButton extends StatelessWidget {
       },
       icon: Icon(
         Icons.delete,
-        color: Theme.of(context).colorScheme.error,
+        color: context.colors.scheme.error,
       ),
     );
   }

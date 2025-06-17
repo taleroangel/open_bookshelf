@@ -1,5 +1,5 @@
 # Project-level configuration.
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.18)
 project(runner LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
@@ -52,7 +52,7 @@ add_subdirectory(${FLUTTER_MANAGED_DIR})
 
 # System-level dependencies.
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtk+-3.0)
+pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtk4)
 
 add_definitions(-DAPPLICATION_ID="${APPLICATION_ID}")
 

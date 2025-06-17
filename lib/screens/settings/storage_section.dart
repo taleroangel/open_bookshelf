@@ -4,6 +4,7 @@ import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/services/storage/cache_storage_service.dart';
 import 'package:provider/provider.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 /// Alter local storage settings
 class StorageSection extends StatefulWidget {
@@ -55,7 +56,7 @@ class _StorageSectionState extends State<StorageSection> {
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(
               t.general.button.delete,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+              style: TextStyle(color: context.colors.scheme.error),
             ),
           ),
         ],
@@ -178,8 +179,7 @@ class _StorageSectionState extends State<StorageSection> {
                       ),
                     Text(
                       t.settings.local_storage.delete_database.button,
-                      style:
-                          TextStyle(color: Theme.of(context).colorScheme.error),
+                      style: TextStyle(color: context.colors.scheme.error),
                     ),
                   ],
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 import 'package:open_bookshelf/i18n/translations.g.dart';
 import 'package:open_bookshelf/providers/bookshelf_provider.dart';
 import 'package:open_bookshelf/screens/tags/tag_expandable.dart';
@@ -35,7 +36,7 @@ class TagsScreen extends StatelessWidget {
                   ),
                   Text(
                     t.labels.no_tags,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: context.textStyles.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
                 ],

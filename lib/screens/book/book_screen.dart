@@ -15,6 +15,7 @@ import 'package:open_bookshelf/widgets/book_cover_widget.dart';
 import 'package:open_bookshelf/widgets/collection_picker_widget.dart';
 import 'package:open_bookshelf/widgets/tag_picker_widget.dart';
 import 'package:open_bookshelf/widgets/text_with_icon_widget.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 
 /// Displays a book provided by [IBookshelfProvider], if 'useThisBookInstead' parameter is non-null,
 /// that book is asumed not to be present in database and [BookshelfProvided will be ignored], instead
@@ -43,7 +44,7 @@ class BookScreen extends StatelessWidget {
             body: Center(
               child: Text(
                 t.book.not_selected,
-                style: Theme.of(context).textTheme.headlineLarge,
+                style: context.textStyles.headlineLarge,
               ),
             ),
           )
@@ -139,7 +140,7 @@ class BookScreen extends StatelessWidget {
                           Text(
                             "\n${t.book.not_in_openlibrary}",
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
+                              color: context.colors.scheme.primary,
                               height: 0.0,
                             ),
                           ),
@@ -291,13 +292,12 @@ class _PopupMenu extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 12.0),
                   child: Icon(
                     Icons.favorite,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: context.colors.scheme.primary,
                   ),
                 ),
                 Text(
                   t.book.submenu.contribute_on_openlibrary,
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.primary),
+                  style: TextStyle(color: context.colors.scheme.primary),
                 ),
               ]),
             ),
